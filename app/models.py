@@ -111,7 +111,7 @@ class User(db.Model):
             return bcrypt.check_password_hash(user.password, password)
 
 
-class Streaming_Provider(db.Model):
+class StreamingProvider(db.Model):
     """An individual message ("warble")."""
 
     __tablename__ = 'streaming_providers'
@@ -197,6 +197,12 @@ class Video(db.Model):
         primary_key=True,
         nullable=False,
     )
+    
+    list = db.relationship(
+        'VideoList', 
+        secondary = 'video_list_videos', 
+        back_populates = 'videos')
+
 
     def __repr__(self):
         return f"<Video #{self.id}: {self.media_type}>"
@@ -217,10 +223,10 @@ class Person(db.Model):
         return f"<Person #{self.id}>"
     
     
-class List(db.Model):
+class VideoList(db.Model):
     """An individual message ("warble")."""
 
-    __tablename__ = 'lists'
+    __tablename__ = 'video_lists'
 
     id = db.Column(
         db.Integer,
@@ -239,13 +245,19 @@ class List(db.Model):
         primary_key=True,
         nullable=False,
     )
+    
+    videos = db.relationship(
+        'Video',
+        secondary = 'video_list_videos',
+        back_populates = 'video_lists'
+    )
 
     def __repr__(self):
         return f"<List #{self.id}: {self.name}, {self.user_id}>"
 
 
 #join table
-video_list = db.Table(
+video_list_videos = db.Table(
     'video_list',
     db.Column('video_id', db.Integer, db.ForeignKey('videos.id')),
     db.Column('video_type', db.Integer, db.ForeignKey('videos.media_type')),
