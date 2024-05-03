@@ -111,56 +111,6 @@ class User(db.Model):
             return bcrypt.check_password_hash(user.password, password)
 
 
-class StreamingProvider(db.Model):
-    """An individual message ("warble")."""
-
-    __tablename__ = 'streaming_providers'
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        nullable=False,
-    )
-
-    name = db.Column(
-        db.Text,
-        nullable=False,
-    )
-
-    logo_path = db.Column(
-        db.Text,
-        nullable=False,
-    )
-
-    display_priority = db.Column(
-        db.Integer,
-        nullable=False,
-    )
-
-    def __repr__(self):
-        return f"<Streaming_service #{self.id}: {self.name}>"
-
-
-class Genre(db.Model):
-    """An individual message ("warble")."""
-
-    __tablename__ = 'genres'
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        nullable=False,
-    )
-
-    name = db.Column(
-        db.Text,
-        nullable=False,
-    )
-
-    def __repr__(self):
-        return f"<Genre #{self.id}: {self.name}>"
-
-
 class Region(db.Model):
     """An individual message ("warble")."""
 
@@ -180,7 +130,8 @@ class Region(db.Model):
     def __repr__(self):
         return f"<Region #{self.id}: {self.name}>"
 
-
+#############################################################################
+#VIDEOS
 class Video(db.Model):
     """An individual message ("warble")."""
 
@@ -206,22 +157,6 @@ class Video(db.Model):
 
     def __repr__(self):
         return f"<Video #{self.id}: {self.media_type}>"
-
-
-class Person(db.Model):
-    """An individual message ("warble")."""
-
-    __tablename__ = 'people'
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        nullable=False,
-    )
-
-    def __repr__(self):
-        return f"<Person #{self.id}>"
-    
     
 class VideoList(db.Model):
     """An individual message ("warble")."""
@@ -261,7 +196,191 @@ video_list_videos = db.Table(
     'video_list',
     db.Column('video_id', db.Integer, db.ForeignKey('videos.id')),
     db.Column('video_type', db.Integer, db.ForeignKey('videos.media_type')),
-    db.Column('list_id', db.Integer, db.ForeignKey('lists.id'))
+    db.Column('video_list_id', db.Integer, db.ForeignKey('video_lists.id'))
+)
+#############################################################################
+
+############################################################################
+#GENRES
+class Genre(db.Model):
+    """An individual message ("warble")."""
+
+    __tablename__ = 'genres'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        nullable=False,
+    )
+
+    name = db.Column(
+        db.Text,
+        nullable=False,
+    )
+    list = db.relationship(
+        'GenreList',
+        secondary = 'genre_list_genres',
+        back_populates = 'genres'
+        )
+
+    def __repr__(self):
+        return f"<Genre #{self.id}: {self.name}>"
+
+class GenreList(db.Model):
+    """An individual message ("warble")."""
+
+    __tablename__ = 'genre_lists'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True,
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        nullable=False,
+    )
+    
+    genres = db.relationship(
+        'Genre',
+        secondary = 'genre_list_genres',
+        back_populates = 'genre_lists'
+    )
+
+    def __repr__(self):
+        return f"<List #{self.id}: {self.name}, {self.user_id}>"
+
+
+#join table
+genre_list_genres = db.Table(
+    'genre_list_genres',
+    db.Column('genre_id', db.Integer, db.ForeignKey('genres.id')),
+    db.Column('genre_list_id', db.Integer, db.ForeignKey('genre_lists.id'))
+)
+####################################################################################
+
+#####################################################################################
+#STREAMING PROVIDERS
+class StreamingProvider(db.Model):
+    """An individual message ("warble")."""
+
+    __tablename__ = 'streaming_providers'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        nullable=False,
+    )
+
+    name = db.Column(
+        db.Text,
+        nullable=False,
+    )
+
+    logo_path = db.Column(
+        db.Text,
+        nullable=False,
+    )
+
+    display_priority = db.Column(
+        db.Integer,
+        nullable=False,
+    )
+
+    def __repr__(self):
+        return f"<Streaming_service #{self.id}: {self.name}>"
+
+class StreamingList(db.Model):
+    """An individual message ("warble")."""
+
+    __tablename__ = 'streaming_lists'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True,
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        nullable=False,
+    )
+    
+    streaming_provider = db.relationship(
+        'StreamingProvider',
+        secondary = 'streaming_list_providers',
+        back_populates = 'genre_list'
+    )
+
+    def __repr__(self):
+        return f"<List #{self.id}: {self.name}, {self.user_id}>"
+
+
+#join table
+streaming_list_providers = db.Table(
+    'streaming_list_providers',
+    db.Column('streaming_provider_id', db.Integer, db.ForeignKey('streaming_providers.id')),
+    db.Column('streaming_list_id', db.Integer, db.ForeignKey('streaming_lists.id'))
+)
+#####################################################################################
+
+#####################################################################################
+#PEOPLE
+class Person(db.Model):
+    """An individual message ("warble")."""
+
+    __tablename__ = 'people'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        nullable=False,
+    )
+    list = db.relationship(
+        'PersonList',
+        secondary = 'person_list_people',
+        back_populates = 'people'
+    )    
+
+    def __repr__(self):
+        return f"<Person #{self.id}>"
+    
+    
+class PersonList(db.Model):
+    """An individual message ("warble")."""
+
+    __tablename__ = 'person_lists'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True,
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        nullable=False,
+    )
+    
+    person = db.relationship(
+        'Person',
+        secondary = 'person_list_people',
+        back_populates = 'person_lists'
+    )
+
+    def __repr__(self):
+        return f"<List #{self.id}: {self.name}, {self.user_id}>"
+
+
+#join table
+person_list_people = db.Table(
+    'person_list_people',
+    db.Column('person_id', db.Integer, db.ForeignKey('people.id')),
+    db.Column('person_list_id', db.Integer, db.ForeignKey('person_lists.id'))
 )
 
 
@@ -269,44 +388,48 @@ video_list_videos = db.Table(
 
 
 
-class Follows(db.Model):
-    """Connection of a follower <-> followed_user."""
-
-    __tablename__ = 'follows'
-
-    user_being_followed_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete="cascade"),
-        primary_key=True,
-    )
-
-    user_following_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete="cascade"),
-        primary_key=True,
-    )
 
 
-class Likes(db.Model):
-    """Mapping user likes to warbles."""
 
-    __tablename__ = 'likes' 
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
+# class Follows(db.Model):
+#     """Connection of a follower <-> followed_user."""
 
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='cascade')
-    )
+#     __tablename__ = 'follows'
 
-    message_id = db.Column(
-        db.Integer,
-        db.ForeignKey('messages.id', ondelete='cascade'),
-        unique=True
-    )
+#     user_being_followed_id = db.Column(
+#         db.Integer,
+#         db.ForeignKey('users.id', ondelete="cascade"),
+#         primary_key=True,
+#     )
+
+#     user_following_id = db.Column(
+#         db.Integer,
+#         db.ForeignKey('users.id', ondelete="cascade"),
+#         primary_key=True,
+#     )
+
+
+# class Likes(db.Model):
+#     """Mapping user likes to warbles."""
+
+#     __tablename__ = 'likes' 
+
+#     id = db.Column(
+#         db.Integer,
+#         primary_key=True
+#     )
+
+#     user_id = db.Column(
+#         db.Integer,
+#         db.ForeignKey('users.id', ondelete='cascade')
+#     )
+
+#     message_id = db.Column(
+#         db.Integer,
+#         db.ForeignKey('messages.id', ondelete='cascade'),
+#         unique=True
+#     )
 
 
 # class User(db.Model):
