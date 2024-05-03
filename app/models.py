@@ -4,6 +4,7 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+#from werkzeug.security import check_password_hash, generate_password_hash
 # from flask_security import Security, SQLAlchemyUserDatastore, auth_required, hash_password
 # from flask_security.models import fsqla_v3 as fsqla
 
@@ -45,15 +46,26 @@ class User(db.Model):
         unique=True,
     )
     
-    password = db.Column(
+    password_hashed = db.Column(
         db.Text,
         nullable=False,
     )    
 
     image_url = db.Column(
         db.Text,
-        default="/static/images/default-pic.png",
+        # default="/static/images/default-pic.png",
     )
+
+    def __init__(self, email, username, password_plaintext):
+        self.email = email
+        self.username = username
+        self.password_hashed = self.password_hashing(password_plaintext)
+        
+    @staticmethod
+    def password_hashing(password_plaintext):
+        return bcrypt.generate_password_hash(password_plaintext).decode('UTF-8')
+        
+
 
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
