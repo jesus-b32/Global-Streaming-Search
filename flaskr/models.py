@@ -156,9 +156,13 @@ class Video(db.Model):
         nullable=False,
     )    
 
+    tmdb_id = db.Column(
+        db.Integer,
+        nullable=False,
+    )    
+
     media_type = db.Column(
         db.Text,
-        primary_key=True,
         nullable=False,
     )
     
@@ -171,7 +175,7 @@ class Video(db.Model):
 
 
     def __repr__(self):
-        return f"<Video #{self.id}: {self.media_type}>"
+        return f"<Video #{self.id}: {self.media_type} and {self.tmdb_id}>"
     
 class VideoList(db.Model):
     """An individual message ("warble")."""
@@ -193,7 +197,6 @@ class VideoList(db.Model):
 
     name = db.Column(
         db.Text,
-        primary_key=True,
         nullable=False,
     )
     
@@ -208,16 +211,27 @@ class VideoList(db.Model):
 
 
 #association table
-video_list_videos = db.Table(
-    'video_list_videos',
-    db.Column('video_list_id', db.Integer, db.ForeignKey('video_lists.id'), primary_key=True),
-    db.Column('video_id', db.Integer, primary_key=True),
-    db.Column('video_type', db.Text, primary_key=True),
-    db.ForeignKeyConstraint(
-        ['video_id', 'video_type'],
-        ['videos.id', 'videos.media_type'],
-    )
-)
+class VideoListVideos(db.Model):
+    """An individual message ("warble")."""
+    __tablename__  = 'video_list_videos'
+    id = db.Column(db.Integer,
+                    primary_key=True,
+                    autoincrement=True)    
+    video_list_id = db.Column(db.Integer, 
+                            db.ForeignKey('video_lists.id'),
+                            nullable=False 
+                            # primary_key=True
+                            )
+    video_id = db.Column(db.Integer, 
+                        db.ForeignKey('videos.id'),
+                        nullable=False 
+                        # primary_key=True
+                        )
+# video_list_videos = db.Table(
+#     'video_list_videos',
+#     db.Column('video_list_id', db.Integer, db.ForeignKey('video_lists.id'), primary_key=True),
+#     db.Column('video_id', db.Integer, db.ForeignKey('videos.id'),primary_key=True)
+# )
 #############################################################################
 
 ############################################################################

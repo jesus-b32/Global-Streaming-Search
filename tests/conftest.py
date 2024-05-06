@@ -1,7 +1,7 @@
 import os
 import pytest
 # from app import app
-from flaskr.models import db, User, VideoList, Video
+from flaskr.models import db, User, VideoList, Video, VideoListVideos
 # BEFORE we import our app, let's set an environmental variable
 # to use a different database for tests (we need to do this
 # before we import our app, since that will have already
@@ -67,9 +67,27 @@ def new_user():
     with app.app_context():
         db.session.add(user)
         db.session.commit()
-        fetched_user = User.query.get(user.id)       
+        fetched_user = db.session.get(User, user.id)          
     
     return fetched_user
+
+
+@pytest.fixture() 
+def new_video():
+    """
+    
+    """
+    video = Video(
+        tmdb_id = 2316, 
+        media_type='tv'
+        )
+    with app.app_context():
+        db.session.add(video)
+        db.session.commit()
+        fetched_video = db.session.get(Video, video.id)
+
+    return fetched_video
+
 
 @pytest.fixture() 
 def new_video_list(new_user):
@@ -83,27 +101,44 @@ def new_video_list(new_user):
     with app.app_context():
         db.session.add(video_list)
         db.session.commit()
-        fetched_video_list = VideoList.query.get(video_list.id)    
-
+        fetched_video_list = db.session.get(VideoList, video_list.id)
     return fetched_video_list
 
 
 @pytest.fixture() 
-def new_video():
+def add_video_to_list():
+# def add_video_to_list(new_user, new_video, new_video_list):
     """
     
     """
+    # video_in_list = video_list_videos(
+        
+    # )
+    user = User(
+        email='test@gmail.com', 
+        username='test1',
+        password_hashed='password'
+        )
     video = Video(
-        id = 2316, 
+        tmdb_id = 2316, 
         media_type='tv'
         )
+    video_list = VideoList(
+        user_id = 1, 
+        name='favorites'
+        )
     with app.app_context():
-        db.session.add(video)
+        db.session.add_all([user, video, video_list])
+        db.session.commit()    
+        video_list.videos.append(video)
+    
+            
+    with app.app_context():
+        # video_list = db.session.get(VideoList, new_video_list.id)
+        # video_list.videos.append(new_video)
+        # new_video_list.videos.append(new_video)
+        # db.session.add(video_list)
+        # db.session.add_all([user, video, video_list])
         db.session.commit()
-        # fetched_video_list = VideoList.query.get(video.id)
-        # fetched_video = Video.query.get()
-        # fetched_video = Video.query.filter((Video.id, Video.media_type) == (2316, 'tv')).first()        
-        # fetched_video = Video.query.filter((Video.id == 2316) & (Video.media_type == 'tv'))
-        fetched_video = Video.query.filter_by(id=2316, media_type='tv')
-
-    return fetched_video
+        fetched_video_list = db.session.get(VideoList, video_list.id)
+    return fetched_video_list
