@@ -4,6 +4,7 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+# from sqlalchemy.schema import PrimarykeyConstraint
 #from werkzeug.security import check_password_hash, generate_password_hash
 # from flask_security import Security, SQLAlchemyUserDatastore, auth_required, hash_password
 # from flask_security.models import fsqla_v3 as fsqla
@@ -51,15 +52,15 @@ class User(db.Model):
         nullable=False,
     )    
 
-    image_url = db.Column(
-        db.Text,
-        # default="/static/images/default-pic.png",
-    )
+    # image_url = db.Column(
+    #     db.Text,
+    #     # default="/static/images/default-pic.png",
+    # )
 
-    def __init__(self, email, username, password_plaintext):
+    def __init__(self, email, username, password_hashed):
         self.email = email
         self.username = username
-        self.password_hashed = self.password_hashing(password_plaintext)
+        self.password_hashed = self.password_hashing(password_hashed)
         
     @staticmethod
     def password_hashing(password_plaintext):
@@ -148,12 +149,12 @@ class Video(db.Model):
     """An individual message ("warble")."""
 
     __tablename__ = 'videos'
-
+    
     id = db.Column(
         db.Integer,
         primary_key=True,
         nullable=False,
-    )
+    )    
 
     media_type = db.Column(
         db.Text,
@@ -161,10 +162,12 @@ class Video(db.Model):
         nullable=False,
     )
     
-    list = db.relationship(
+    video_lists = db.relationship(
         'VideoList', 
-        secondary = 'video_list_videos', 
-        back_populates = 'videos')
+        secondary = 'video_list_videos',
+        back_populates = 'videos'
+    )
+
 
 
     def __repr__(self):
@@ -179,6 +182,7 @@ class VideoList(db.Model):
         db.Integer,
         primary_key=True,
         autoincrement=True,
+        unique=True
     )
 
     user_id = db.Column(
@@ -203,12 +207,16 @@ class VideoList(db.Model):
         return f"<List #{self.id}: {self.name}, {self.user_id}>"
 
 
-#join table
+#association table
 video_list_videos = db.Table(
-    'video_list',
-    db.Column('video_id', db.Integer, db.ForeignKey('videos.id')),
-    db.Column('video_type', db.Integer, db.ForeignKey('videos.media_type')),
-    db.Column('video_list_id', db.Integer, db.ForeignKey('video_lists.id'))
+    'video_list_videos',
+    db.Column('video_list_id', db.Integer, db.ForeignKey('video_lists.id'), primary_key=True),
+    db.Column('video_id', db.Integer, primary_key=True),
+    db.Column('video_type', db.Text, primary_key=True),
+    db.ForeignKeyConstraint(
+        ['video_id', 'video_type'],
+        ['videos.id', 'videos.media_type'],
+    )
 )
 #############################################################################
 
@@ -229,7 +237,7 @@ class Genre(db.Model):
         db.Text,
         nullable=False,
     )
-    list = db.relationship(
+    genre_lists = db.relationship(
         'GenreList',
         secondary = 'genre_list_genres',
         back_populates = 'genres'
@@ -300,6 +308,12 @@ class StreamingProvider(db.Model):
         db.Integer,
         nullable=False,
     )
+    
+    streaming_lists = db.relationship(
+        'StreamingList',
+        secondary = 'streaming_list_providers',
+        back_populates = 'streaming_providers'
+    )    
 
     def __repr__(self):
         return f"<Streaming_service #{self.id}: {self.name}>"
@@ -321,10 +335,10 @@ class StreamingList(db.Model):
         nullable=False,
     )
     
-    streaming_provider = db.relationship(
+    streaming_providers = db.relationship(
         'StreamingProvider',
         secondary = 'streaming_list_providers',
-        back_populates = 'genre_list'
+        back_populates = 'streaming_lists'
     )
 
     def __repr__(self):
@@ -341,59 +355,59 @@ streaming_list_providers = db.Table(
 
 #####################################################################################
 #PEOPLE
-class Person(db.Model):
-    """An individual message ("warble")."""
+# class Person(db.Model):
+#     """An individual message ("warble")."""
 
-    __tablename__ = 'people'
+#     __tablename__ = 'persons'
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        nullable=False,
-    )
-    list = db.relationship(
-        'PersonList',
-        secondary = 'person_list_people',
-        back_populates = 'people'
-    )    
+#     id = db.Column(
+#         db.Integer,
+#         primary_key=True,
+#         nullable=False,
+#     )
+#     person_lists = db.relationship(
+#         'PersonList',
+#         secondary = 'person_list_persons',
+#         back_populates = 'persons'
+#     )    
 
-    def __repr__(self):
-        return f"<Person #{self.id}>"
+#     def __repr__(self):
+#         return f"<Person #{self.id}>"
     
     
-class PersonList(db.Model):
-    """An individual message ("warble")."""
+# class PersonList(db.Model):
+#     """An individual message ("warble")."""
 
-    __tablename__ = 'person_lists'
+#     __tablename__ = 'person_lists'
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        autoincrement=True,
-    )
+#     id = db.Column(
+#         db.Integer,
+#         primary_key=True,
+#         autoincrement=True,
+#     )
 
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
-        nullable=False,
-    )
+#     user_id = db.Column(
+#         db.Integer,
+#         db.ForeignKey('users.id', ondelete='CASCADE'),
+#         nullable=False,
+#     )
     
-    person = db.relationship(
-        'Person',
-        secondary = 'person_list_people',
-        back_populates = 'person_lists'
-    )
+#     person = db.relationship(
+#         'Person',
+#         secondary = 'person_list_persons',
+#         back_populates = 'person_lists'
+#     )
 
-    def __repr__(self):
-        return f"<List #{self.id}: {self.name}, {self.user_id}>"
+#     def __repr__(self):
+#         return f"<List #{self.id}: {self.name}, {self.user_id}>"
 
 
-#join table
-person_list_people = db.Table(
-    'person_list_people',
-    db.Column('person_id', db.Integer, db.ForeignKey('people.id')),
-    db.Column('person_list_id', db.Integer, db.ForeignKey('person_lists.id'))
-)
+# #join table
+# person_list_persons = db.Table(
+#     'person_list_persons',
+#     db.Column('person_id', db.Integer, db.ForeignKey('persons.id')),
+#     db.Column('person_list_id', db.Integer, db.ForeignKey('person_lists.id'))
+# )
 
 
 
