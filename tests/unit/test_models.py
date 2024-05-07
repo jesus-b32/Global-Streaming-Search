@@ -20,6 +20,7 @@ class TestModels:
             assert new_user.email == 'test@gmail.com'
             assert new_user.username == 'test1'
             assert new_user.password_hashed != 'password'
+            assert new_user.image_url == '/static/images/default-pic.jpg'
     
     
     class TestVideo:       
@@ -46,57 +47,87 @@ class TestModels:
             assert new_video_list.name == 'favorites'
             
     class TestVideoListVideos:
-        def test_adding_video_to_videolist(self, client):
+        def test_adding_video_to_videolist(self, client, add_video_to_list):
             """
             GIVEN a VideoList model
             WHEN a new VideoList is created
             THEN check the user_id and name fields are defined correctly
             """
-            # new_video_list.videos.append(new_video)
-            # print(f'video id {new_video_list.videos[0].id} is in video list')
-            user = User(
-                email='test@gmail.com', 
-                username='test1',
-                password_hashed='password'
-                )
-            video = Video(
-                tmdb_id = 2316, 
-                media_type='tv'
-                )
-            video_list = VideoList(
-                user_id = 1, 
-                name='favorites'
-                )
-            with app.app_context():
-                db.session.add_all([user, video, video_list])
-                db.session.commit()   
-            # video_list.videos.append(video)
-                video_list_videos = VideoListVideos(
-                                    video_list_id = video_list.id,
-                                    video_id = video.id)
+            assert add_video_to_list.id == 1
+            assert add_video_to_list.video_list_id == 1
+            assert add_video_to_list.video_id ==  1
             
-                    
-            with app.app_context():
-                db.session.add(video_list_videos)
-                db.session.commit()
-                fetched_video_list = db.session.get(VideoListVideos, video_list_videos.id) 
+    class TestRegion:
+        def test_new_region(self, client, new_region):
+            """
+            GIVEN a User model
+            WHEN a new User is created
+            THEN check the email and password_hashed fields are defined correctly
+            """
+            assert new_region.id == 'US'
+            assert new_region.name == 'United States'
+
+    class TestGenre:
+        def test_new_genre(self, client, new_genre):
+            """
+            GIVEN a User model
+            WHEN a new User is created
+            THEN check the email and password_hashed fields are defined correctly
+            """
+            assert new_genre.id == 28
+            assert new_genre.name == 'Action'     
             
-            assert fetched_video_list.video_list_id == 1
-            assert fetched_video_list.video_id ==  1
+    class TestGenreList:        
+        def test_genre_list(self, client, new_genre_list):
+            """
+            GIVEN a VideoList model
+            WHEN a new VideoList is created
+            THEN check the user_id and name fields are defined correctly
+            """
+            assert new_genre_list.id == 1
+            assert new_genre_list.user_id == 1         
             
-            # assert video_list.videos[0].media_type == 'tv'
-            # assert fetched_video_list.videos[0].media_type == 'tv'            
-            # assert fetched_video_list.videos[0].id == 1
-            # assert fetched_video_list.videos[0].tmdb_id == 2316
-            # assert fetched_video_list.videos[0].media_type == 'tv'
+    class TestGenreListGenres:
+        def test_adding_genre_to_genrelist(self, client, add_genre_to_list):
+            """
+            GIVEN a VideoList model
+            WHEN a new VideoList is created
+            THEN check the user_id and name fields are defined correctly
+            """
+            assert add_genre_to_list.id == 1
+            assert add_genre_to_list.genre_list_id == 1
+            assert add_genre_to_list.genre_id ==  28
             
-            # assert add_video_to_list.video_lists[0].id == 1
-            # assert add_video_to_list.video_lists[0].user_id == 1
-            # assert add_video_to_list.video_lists[0].name == 'favorites'
             
-            # assert new_video_list.videos[0].id == new_video.id
-            # assert new_video_list.videos[0].media_type == new_video.media_type
+    class TestStreamingProvider:
+        def test_streaming_provider(self, client, new_streaming_provider):
+            """
+            GIVEN a User model
+            WHEN a new User is created
+            THEN check the email and password_hashed fields are defined correctly
+            """
+            assert new_streaming_provider.id == 8
+            assert new_streaming_provider.name == 'Netflix'     
+            assert new_streaming_provider.logo_path == '/pbpMk2JmcoNnQwx5JGpXngfoWtp.jpg'     
+            assert new_streaming_provider.display_priority == 5    
             
-            # assert new_video.video_lists[0].id == new_video_list.id
-            # assert new_video.video_lists[0].user_id == new_user.id
-            # assert new_video.video_lists[0].name == new_video_list.name
+    class TestStreamingList:        
+        def test_streaming_list(self, client, new_streaming_list):
+            """
+            GIVEN a VideoList model
+            WHEN a new VideoList is created
+            THEN check the user_id and name fields are defined correctly
+            """
+            assert new_streaming_list.id == 1
+            assert new_streaming_list.user_id == 1         
+            
+    class TestStreamingListProviders:
+        def test_adding_streaming_provider_to_list(self, client, add_streaming_provider_to_list):
+            """
+            GIVEN a VideoList model
+            WHEN a new VideoList is created
+            THEN check the user_id and name fields are defined correctly
+            """
+            assert add_streaming_provider_to_list.id == 1
+            assert add_streaming_provider_to_list.streaming_provider_id == 8
+            assert add_streaming_provider_to_list.streaming_list_id ==  1            

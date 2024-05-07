@@ -52,10 +52,10 @@ class User(db.Model):
         nullable=False,
     )    
 
-    # image_url = db.Column(
-    #     db.Text,
-    #     # default="/static/images/default-pic.png",
-    # )
+    image_url = db.Column(
+        db.Text,
+        default="/static/images/default-pic.jpg"
+    )
 
     def __init__(self, email, username, password_hashed):
         self.email = email
@@ -227,11 +227,6 @@ class VideoListVideos(db.Model):
                         nullable=False 
                         # primary_key=True
                         )
-# video_list_videos = db.Table(
-#     'video_list_videos',
-#     db.Column('video_list_id', db.Integer, db.ForeignKey('video_lists.id'), primary_key=True),
-#     db.Column('video_id', db.Integer, db.ForeignKey('videos.id'),primary_key=True)
-# )
 #############################################################################
 
 ############################################################################
@@ -288,11 +283,17 @@ class GenreList(db.Model):
 
 
 #join table
-genre_list_genres = db.Table(
-    'genre_list_genres',
-    db.Column('genre_id', db.Integer, db.ForeignKey('genres.id')),
-    db.Column('genre_list_id', db.Integer, db.ForeignKey('genre_lists.id'))
-)
+class GenreListGenres(db.Model):
+    'genre_list_genres'
+    __tablename__ = 'genre_list_genres'
+    id = db.Column(db.Integer,
+                    primary_key=True,
+                    autoincrement=True)       
+    genre_id = db.Column(db.Integer, 
+                        db.ForeignKey('genres.id'))
+    genre_list_id = db.Column(db.Integer, 
+                        db.ForeignKey('genre_lists.id'))
+
 ####################################################################################
 
 #####################################################################################
@@ -360,11 +361,16 @@ class StreamingList(db.Model):
 
 
 #join table
-streaming_list_providers = db.Table(
-    'streaming_list_providers',
-    db.Column('streaming_provider_id', db.Integer, db.ForeignKey('streaming_providers.id')),
-    db.Column('streaming_list_id', db.Integer, db.ForeignKey('streaming_lists.id'))
-)
+class StreamingListProviders(db.Model):
+    'streaming_list_providers'
+    __tablename__ = 'streaming_list_providers'
+    id = db.Column(db.Integer,
+                    primary_key=True,
+                    autoincrement=True)      
+    streaming_provider_id = db.Column(db.Integer, db.ForeignKey('streaming_providers.id'))
+    streaming_list_id = db.Column(db.Integer, db.ForeignKey('streaming_lists.id'))
+    
+
 #####################################################################################
 
 #####################################################################################
@@ -422,227 +428,3 @@ streaming_list_providers = db.Table(
 #     db.Column('person_id', db.Integer, db.ForeignKey('persons.id')),
 #     db.Column('person_list_id', db.Integer, db.ForeignKey('person_lists.id'))
 # )
-
-
-
-
-
-
-
-
-
-
-# class Follows(db.Model):
-#     """Connection of a follower <-> followed_user."""
-
-#     __tablename__ = 'follows'
-
-#     user_being_followed_id = db.Column(
-#         db.Integer,
-#         db.ForeignKey('users.id', ondelete="cascade"),
-#         primary_key=True,
-#     )
-
-#     user_following_id = db.Column(
-#         db.Integer,
-#         db.ForeignKey('users.id', ondelete="cascade"),
-#         primary_key=True,
-#     )
-
-
-# class Likes(db.Model):
-#     """Mapping user likes to warbles."""
-
-#     __tablename__ = 'likes' 
-
-#     id = db.Column(
-#         db.Integer,
-#         primary_key=True
-#     )
-
-#     user_id = db.Column(
-#         db.Integer,
-#         db.ForeignKey('users.id', ondelete='cascade')
-#     )
-
-#     message_id = db.Column(
-#         db.Integer,
-#         db.ForeignKey('messages.id', ondelete='cascade'),
-#         unique=True
-#     )
-
-
-# class User(db.Model):
-#     """User in the system."""
-
-#     __tablename__ = 'users'
-
-#     id = db.Column(
-#         db.Integer,
-#         primary_key=True,
-#     )
-
-#     email = db.Column(
-#         db.Text,
-#         nullable=False,
-#         unique=True,
-#     )
-
-#     username = db.Column(
-#         db.Text,
-#         nullable=False,
-#         unique=True,
-#     )
-
-#     image_url = db.Column(
-#         db.Text,
-#         default="/static/images/default-pic.png",
-#     )
-
-#     header_image_url = db.Column(
-#         db.Text,
-#         default="/static/images/warbler-hero.jpg"
-#     )
-
-#     bio = db.Column(
-#         db.Text,
-#     )
-
-#     location = db.Column(
-#         db.Text,
-#     )
-
-#     password = db.Column(
-#         db.Text,
-#         nullable=False,
-#     )
-
-#     messages = db.relationship('Message')
-
-#     followers = db.relationship(
-#         "User",
-#         secondary="follows",
-#         primaryjoin=(Follows.user_being_followed_id == id),
-#         secondaryjoin=(Follows.user_following_id == id)
-#     )
-
-#     following = db.relationship(
-#         "User",
-#         secondary="follows",
-#         primaryjoin=(Follows.user_following_id == id),
-#         secondaryjoin=(Follows.user_being_followed_id == id)
-#     )
-
-#     #like will hold a list of messages objects.
-#     #the relation with Like table append current user id and message id
-#     likes = db.relationship(
-#         'Message',
-#         secondary="likes"
-#     )
-
-#     def __repr__(self):
-#         return f"<User #{self.id}: {self.username}, {self.email}>"
-
-#     def is_followed_by(self, other_user):
-#         """Is this user followed by `other_user`?"""
-
-#         found_user_list = [user for user in self.followers if user == other_user]
-#         return len(found_user_list) == 1
-
-#     def is_following(self, other_user):
-#         """Is this user following `other_use`?"""
-
-#         found_user_list = [user for user in self.following if user == other_user]
-#         return len(found_user_list) == 1
-
-#     @classmethod
-#     def signup(cls, username, email, password, image_url):
-#         """Sign up user.
-
-#         Hashes password and adds user to system.
-#         """
-
-#         hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
-
-#         user = User(
-#             username=username,
-#             email=email,
-#             password=hashed_pwd,
-#             image_url=image_url,
-#         )
-
-#         db.session.add(user)
-#         return user
-
-#     @classmethod
-#     def authenticate(cls, username, password):
-#         """Find user with `username` and `password`.
-
-#         This is a class method (call it on the class, not an individual user.)
-#         It searches for a user whose password hash matches this password
-#         and, if it finds such a user, returns that user object.
-
-#         If can't find matching user (or if password is wrong), returns False.
-#         """
-
-#         user = cls.query.filter_by(username=username).first()
-
-#         if user:
-#             is_auth = bcrypt.check_password_hash(user.password, password)
-#             if is_auth:
-#                 return user
-
-#         return False
-    
-#     @classmethod
-#     def check_password(cls, username, password):
-#         """Check if entered password by user matches passord stored.
-
-#         This is a class method (call it on the class, not an individual user.)
-#         It checks if the password entered by user whose password hash matches this password. Returns true if matches and false if it does not.
-#         """
-
-#         user = cls.query.filter_by(username=username).first()
-
-#         if user:
-#             return bcrypt.check_password_hash(user.password, password)
-
-
-# class Message(db.Model):
-#     """An individual message ("warble")."""
-
-#     __tablename__ = 'messages'
-
-#     id = db.Column(
-#         db.Integer,
-#         primary_key=True,
-#     )
-
-#     text = db.Column(
-#         db.String(140),
-#         nullable=False,
-#     )
-
-#     timestamp = db.Column(
-#         db.DateTime,
-#         nullable=False,
-#         default=datetime.utcnow(),
-#     )
-
-#     user_id = db.Column(
-#         db.Integer,
-#         db.ForeignKey('users.id', ondelete='CASCADE'),
-#         nullable=False,
-#     )
-
-#     user = db.relationship('User')
-
-#     def __repr__(self):
-#         return f"<Message #{self.id}: {self.text}, {self.user_id}>"
-
-    
-#     def is_liked(self, user):
-#         """Check if current message is in a user's liked list"""
-
-#         found_liked_msg = [msg for msg in user.likes if msg == self]
-#         return len(found_liked_msg) == 1
