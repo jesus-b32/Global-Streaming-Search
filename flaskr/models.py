@@ -47,7 +47,7 @@ class User(db.Model):
         unique=True,
     )
     
-    password_hashed = db.Column(
+    password = db.Column(
         db.Text,
         nullable=False,
     )    
@@ -57,10 +57,11 @@ class User(db.Model):
         default="/static/images/default-pic.jpg"
     )
 
-    def __init__(self, email, username, password_hashed):
+    def __init__(self, email, username, password, image_url):
         self.email = email
         self.username = username
-        self.password_hashed = self.password_hashing(password_hashed)
+        self.password = self.password_hashing(password)
+        self.image_url = image_url
         
     @staticmethod
     def password_hashing(password_plaintext):
@@ -71,24 +72,24 @@ class User(db.Model):
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
-    @classmethod
-    def signup(cls, username, email, password, image_url):
-        """Sign up user.
+    # @classmethod
+    # def signup(cls, username, email, password, image_url):
+    #     """Sign up user.
 
-        Hashes password and adds user to system.
-        """
+    #     Hashes password and adds user to system.
+    #     """
 
-        hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
+    #     hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
 
-        user = User(
-            username=username,
-            email=email,
-            password=hashed_pwd,
-            image_url=image_url,
-        )
+    #     user = User(
+    #         username=username,
+    #         email=email,
+    #         password=hashed_pwd,
+    #         image_url=image_url,
+    #     )
 
-        db.session.add(user)
-        return user
+    #     db.session.add(user)
+    #     return user
 
     @classmethod
     def authenticate(cls, username, password):

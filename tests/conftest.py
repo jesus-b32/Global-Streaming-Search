@@ -62,7 +62,8 @@ def new_user():
     user = User(
         email='test@gmail.com', 
         username='test1',
-        password_hashed='password'
+        password='password',
+        image_url=None
         )
     with app.app_context():
         db.session.add(user)
@@ -114,7 +115,8 @@ def add_video_to_list():
     user = User(
         email='test@gmail.com', 
         username='test1',
-        password_hashed='password'
+        password='password',
+        image_url=None
         )
     video = Video(
         tmdb_id = 2316, 
