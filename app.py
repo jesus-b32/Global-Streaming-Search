@@ -214,11 +214,6 @@ def movie_search():
     # movies request
     movie_response = requests.get(movie_url, headers=headers)
     movie_data = movie_response.json()
-    # print(movie_response.json())
-    # movie_result = movie_responseresults
-    # movie_page = movie_response.page
-    # movie_total_pages = movie_response.total_pages
-    # movie_total_results = movie_response.total_results
     
         
     return render_template('movie_results.html',
@@ -233,7 +228,7 @@ def tv_search():
     Can take a 'q' parameter in querystring to search by that username.
     """
 
-    search = request.args.get('q')
+    search = request.args.get('search')
     tv_url = f"https://api.themoviedb.org/3/search/tv?query={search}&include_adult=false&language=en-US&page=1"
 
     headers = {
@@ -243,17 +238,8 @@ def tv_search():
     
     # tv shows request
     tv_response = requests.get(tv_url, headers=headers)
-    # tv_result = tv_response.results
-    # tv_page = tv_response.page
-    # tv_total_pages = tv_response.total_pages
-    # tv_total_results = tv_response.total_results
-    # print(response.text)
-
-    # if not search:
-    #     # users = User.query.all()
-    # else:
-    #     # users = User.query.filter(User.username.like(f"%{search}%")).all()
+    tv_data = tv_response.json()
         
-    return render_template('search_results.html',
+    return render_template('tv_results.html',
                             search=search,
-                            tv_response=tv_response)
+                            tv_data=tv_data)
