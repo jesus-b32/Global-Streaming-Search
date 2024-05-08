@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="text-center">Search Results for: {{search}}</h1>
+
+        {% for result in movie_data['results'] %}
+            <div class="container text-center">
+                <div class="row">
+                    <div class="col-3">
+                        <img src="https://image.tmdb.org/t/p/original{{result.poster_path}}" alt="">
+                    </div>
+                    <div class="col">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{result['title']}}</h5>
+                                <h6 class="card-subtitle mb-2 text-body-secondary">{{result['release_date']}}</h6>
+                                <p class="card-text">{{result['overview']}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

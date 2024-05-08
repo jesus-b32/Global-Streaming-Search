@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+<!-- {% block body_class %}onboarding{% endblock %} -->
+
+{% block content %}
+
+    <div class="row justify-content-md-center">
+    <div class="col-md-7 col-lg-5">
+        <h2 class="join-message">Create a Free Account</h2>
+        <form method="POST">
+            {% include "form.html" %}
+        <button class="btn btn-primary btn-lg btn-block">Sign me up!</button>
+        </form>
+        <h4>Already Have an Account? <a href="/login">Login</a></h4>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,11 +1,11 @@
 # import pytest
 # from app import app
 import os
-from flaskr.models import db, User, VideoList, Video, VideoListVideos
+from models import db, User, VideoList, Video, VideoListVideos
 os.environ['DATABASE_URL'] = "postgresql:///global-streaming-search-test"
 
 # Now we can import app
-from flaskr.app import app
+from app import app
 
 
 class TestModels:

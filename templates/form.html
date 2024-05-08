@@ -1,0 +1,21 @@
+{{ form.hidden_tag() }}
+
+{% for field in form
+    if field.widget.input_type != 'hidden' %}
+        {% if field.type == 'BooleanField' %}
+            <div class="form-check">
+                {{ field.label(class_="form-label-check") }}
+                {{ field(class_="form-check-input") }}
+            </div>
+        {% else %}
+            <div class="mb-3">
+                {{ field.label(class_="form-label") }}
+                {{ field(class_="form-control") }}
+            </div>
+        {% endif %}
+        {% if field.errors %}
+            {% for error in field.errors %}
+                <span class="form-text text-danger">{{ error }}</span>
+            {% endfor %}
+        {% endif %}
+{% endfor %}

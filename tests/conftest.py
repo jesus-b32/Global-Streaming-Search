@@ -1,7 +1,7 @@
 import os
 import pytest
 # from app import app
-from flaskr.models import db, User, VideoList, Video, VideoListVideos, Region, Genre, GenreList, GenreListGenres, StreamingProvider, StreamingList, StreamingListProviders
+from models import db, User, VideoList, Video, VideoListVideos, Region, Genre, GenreList, GenreListGenres, StreamingProvider, StreamingList, StreamingListProviders
 # BEFORE we import our app, let's set an environmental variable
 # to use a different database for tests (we need to do this
 # before we import our app, since that will have already
@@ -10,7 +10,7 @@ from flaskr.models import db, User, VideoList, Video, VideoListVideos, Region, G
 os.environ['DATABASE_URL'] = "postgresql:///global-streaming-search-test"
 
 # Now we can import app
-from flaskr.app import app
+from app import app
 
 
 # @pytest.fixture()
@@ -117,6 +117,7 @@ def add_video_to_list():
         username='test1',
         password='password',
         image_url=None
+        
         )
     video = Video(
         tmdb_id = 2316, 

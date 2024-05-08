@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="text-center">Global Streaming Search</h1>
+
+        <div class="search-container">
+            <form action="/search/movie">
+                <input class="form-control form-control-lg" name="search" type="text" placeholder="Search Movies or TV Shows" aria-label="search bar" required>
+            </form>
+            <!-- <div class="suggestions">
+                <ul></ul>
+            </div> -->
+        </div>
+    </div>
+{% endblock %}
