@@ -151,6 +151,17 @@ def homepage():
 
     else:
         return render_template('home-anon.html')
+    
+    
+@app.route('/about')
+def about():
+    """Show about section:
+
+    - anon users: no messages
+    - logged in: 100 most recent messages of followed_users
+    """
+
+    return render_template('about.html')
 
 
 ##############################################################################
@@ -195,7 +206,7 @@ def list_users():
 
 
 ##############################################################################
-# TMDB routes:
+# Movie routes:
 
 @app.route('/search/movie')
 def movie_search():
@@ -218,6 +229,30 @@ def movie_search():
         
     return render_template('movie_results.html',
                             search=search,
+                            movie_data=movie_data)
+    
+@app.route('/movie/<int:movie_id>')
+def movie_detail(movie_id):
+    """Search page with listing of movies, TV shows, and people.
+
+    Can take a 'q' parameter in querystring to search by that username.
+    """
+
+    # url = f"https://api.themoviedb.org/3/movie/{movie_id}?language=en-US"
+    url = f"https://api.themoviedb.org/3/movie/{movie_id}?append_to_response=watch%2Fproviders&language=en-US"
+
+    headers = {
+        "accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
+    }
+
+    response = requests.get(url, headers=headers)
+
+    # print(response.text)
+    movie_data = response.json()
+    
+        
+    return render_template('movie_detail.html',
                             movie_data=movie_data)
 
     

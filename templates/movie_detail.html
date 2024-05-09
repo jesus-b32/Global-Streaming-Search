@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="card mb-3">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    {% if  movie_data.poster_path %}
+                        <img src="https://image.tmdb.org/t/p/w342{{movie_data.poster_path}}" class="img-fluid rounded-start" alt="Movie Poster">
+                    {% else %}
+                        <img src="https://img.icons8.com/ios-filled/100/no-image.png" alt="no-image"/>
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            {{movie_data.title}}
+                        </h1>
+                        <p class="card-text">
+                            Run Time: {{movie_data.runtime}}min
+                        </p>
+                        <p class="card-text">
+                            {% for genre in movie_data.genres %}
+                                {{genre.name}}
+                            {% endfor %}
+                        </p>
+                        <p class="card-text">
+                            Original Language: {{movie_data.original_language}}
+                        </p>     
+                        <p class="card-text">
+                            Release Date: {{movie_data.release_date}}
+                        </p>                                              
+                        <h4 class="card-subtitle mb-2">
+                            Overview
+                        </h4>                        
+                        <p class="card-text">{{movie_data.overview}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
