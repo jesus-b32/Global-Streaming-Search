@@ -19,8 +19,9 @@
                             Run Time: {{movie_data.runtime}}min
                         </p>
                         <p class="card-text">
+                            Genres: 
                             {% for genre in movie_data.genres %}
-                                {{genre.name}}
+                                {{genre.name}}-
                             {% endfor %}
                         </p>
                         <p class="card-text">
@@ -39,5 +40,59 @@
         </div>
     </div>
 
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                {% for option in movie_data['watch/providers'].results.US %}
+                    {% if option != 'link'%}
+                        <div class="container">
+                            <h3>{{option}}</h3>
+                            <div class="d-flex flex-row mb-3">
+                                {% for provider in movie_data['watch/providers'].results.US[option] %}
+                                    <div class="p-2">
+                                        <img src="https://image.tmdb.org/t/p/w45{{provider.logo_path}}" alt="{{provider.provider_name}}" class="">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="col-4">
+                <form action="">
+                    <div class="row mb-3">
+                        <!-- <label for="Country" class="col-sm-2 col-form-label">Select Country: </label> -->
+                        <div class="col-sm-10">
+                            <div class="form-group">
+                                <select class="" id="country" name="country" required>
+                                    <!-- <option value="">Select Country</option> -->
+                                    {% for country in region_data.results %}
+                                        <option value="{{country.iso_3166_1}}">
+                                            {{country.native_name}}
+                                            <!-- use a a tag in option that does a get request that sends the country code movie_detail route -->
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>        
+                </form>    
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
+
+
+<!-- {% if movie_data['watch/providers'].results.US.flatrate%}
+<div class="container mb-5">
+    <h3>flatrate</h3>
+    <div class="d-flex flex-row mb-3">
+        {% for provider in movie_data['watch/providers'].results.US.flatrate %}
+            <div class="p-2">
+                <img src="https://image.tmdb.org/t/p/w45{{provider.logo_path}}" alt="{{provider.provider_name}}" class="">
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %} -->

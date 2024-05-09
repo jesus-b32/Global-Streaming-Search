@@ -237,23 +237,28 @@ def movie_detail(movie_id):
 
     Can take a 'q' parameter in querystring to search by that username.
     """
-
-    # url = f"https://api.themoviedb.org/3/movie/{movie_id}?language=en-US"
-    url = f"https://api.themoviedb.org/3/movie/{movie_id}?append_to_response=watch%2Fproviders&language=en-US"
+    
+    regions_url = "https://api.themoviedb.org/3/watch/providers/regions?language=en-US"
 
     headers = {
         "accept": "application/json",
         "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
     }
+    region_response = requests.get(regions_url, headers=headers)
+    region_data = region_response.json()
 
-    response = requests.get(url, headers=headers)
-
-    # print(response.text)
-    movie_data = response.json()
+    # GET request for movie detail and streaming info
+    movie_url = f"https://api.themoviedb.org/3/movie/{movie_id}?append_to_response=watch%2Fproviders&language=en-US"
+    headers = {
+        "accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
+    }
+    movie_response = requests.get(movie_url, headers=headers)
+    movie_data = movie_response.json()
     
-        
     return render_template('movie_detail.html',
-                            movie_data=movie_data)
+                            movie_data=movie_data,
+                            region_data=region_data)
 
     
 @app.route('/search/tv')
