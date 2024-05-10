@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<!-- This div section contains all import movie details -->
     <div class="container-fluid">
         <div class="card mb-3">
             <div class="row g-0">
@@ -7,7 +8,7 @@
                     {% if  movie_data.poster_path %}
                         <img src="https://image.tmdb.org/t/p/w342{{movie_data.poster_path}}" class="img-fluid rounded-start" alt="Movie Poster">
                     {% else %}
-                        <img src="https://img.icons8.com/ios-filled/100/no-image.png" alt="no-image"/>
+                        <img src="https://img.icons8.com/ios-filled/100/no-image.png" alt="no-image" class="img-fluid"/>
                     {% endif %}
                 </div>
                 <div class="col-md-8">
@@ -40,17 +41,19 @@
         </div>
     </div>
 
-    <div class="container">
+<!-- This div section contains streaming data by country -->
+    <div class="container-fluid">
         <div class="row">
+            <!-- rows containing streaming providers seperated by type(called option) -->
             <div class="col">
-                {% for option in movie_data['watch/providers'].results.US %}
+                {% for option in movie_data['watch/providers'].results[country_selection] %}
                     {% if option != 'link'%}
                         <div class="container">
                             <h3>{{option}}</h3>
                             <div class="d-flex flex-row mb-3">
-                                {% for provider in movie_data['watch/providers'].results.US[option] %}
+                                {% for provider in movie_data['watch/providers'].results[country_selection][option] %}
                                     <div class="p-2">
-                                        <img src="https://image.tmdb.org/t/p/w45{{provider.logo_path}}" alt="{{provider.provider_name}}" class="">
+                                        <img src="https://image.tmdb.org/t/p/w92{{provider.logo_path}}" alt="{{provider.provider_name}}" class="img-fluid">
                                     </div>
                                 {% endfor %}
                             </div>
@@ -58,23 +61,30 @@
                     {% endif %}
                 {% endfor %}
             </div>
-            <div class="col-4">
-                <form action="">
+            <!-- search bar for user to select country they want streaming data for -->
+            <div class="col-3">
+                <form action="/movie/{{movie_data.id}}">
                     <div class="row mb-3">
-                        <!-- <label for="Country" class="col-sm-2 col-form-label">Select Country: </label> -->
                         <div class="col-sm-10">
                             <div class="form-group">
                                 <select class="" id="country" name="country" required>
-                                    <!-- <option value="">Select Country</option> -->
                                     {% for country in region_data.results %}
-                                        <option value="{{country.iso_3166_1}}">
-                                            {{country.native_name}}
-                                            <!-- use a a tag in option that does a get request that sends the country code movie_detail route -->
-                                        </option>
+                                        {% if country.iso_3166_1 == country_selection %}
+                                            <option value="{{country.iso_3166_1}}" selected>
+                                                {{country.native_name}}
+                                            </option>
+                                        {% else %}
+                                            <option value="{{country.iso_3166_1}}">
+                                                {{country.native_name}}
+                                            </option>
+                                        {% endif %}
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
+                    </div>
+                    <div class="">
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </div>        
                 </form>    
             </div>
@@ -82,17 +92,3 @@
     </div>
 
 {% endblock %}
-
-
-<!-- {% if movie_data['watch/providers'].results.US.flatrate%}
-<div class="container mb-5">
-    <h3>flatrate</h3>
-    <div class="d-flex flex-row mb-3">
-        {% for provider in movie_data['watch/providers'].results.US.flatrate %}
-            <div class="p-2">
-                <img src="https://image.tmdb.org/t/p/w45{{provider.logo_path}}" alt="{{provider.provider_name}}" class="">
-            </div>
-        {% endfor %}
-    </div>
-</div>
-{% endif %} -->

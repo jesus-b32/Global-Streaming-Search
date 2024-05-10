@@ -230,35 +230,79 @@ def movie_search():
     return render_template('movie_results.html',
                             search=search,
                             movie_data=movie_data)
+
+def get_country_list():
+    """Returns JSON of countries with streaming data from TMDB API
+
+    Returns:
+        _type_: JSON
+    """
+    url = "https://api.themoviedb.org/3/watch/providers/regions?language=en-US"
+
+    headers = {
+        "accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
+    }
+    response = requests.get(url, headers=headers)
+    return response.json()    
+
+
+def movie_details(movie_id):
+    """Returns JSON of movie detials including streaming provider data for that movies from TMDB API
+
+    Returns:
+        _type_: JSON
+    """
+    url = f"https://api.themoviedb.org/3/movie/{movie_id}?append_to_response=watch%2Fproviders&language=en-US"
+    headers = {
+        "accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
+    }
+    response = requests.get(url, headers=headers)
+    return response.json() 
+
+
+def movie_provider_list():
+    """Returns JSON of streaming providers for movies from TMDB API
+
+    Returns:
+        _type_: JSON
+    """
+    url = "https://api.themoviedb.org/3/watch/providers/movie?language=en-US"
+
+    headers = {
+    "accept": "application/json",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
+}
+
+    response = requests.get(url, headers=headers)
+    return response.json()    
+
     
 @app.route('/movie/<int:movie_id>')
 def movie_detail(movie_id):
-    """Search page with listing of movies, TV shows, and people.
-
-    Can take a 'q' parameter in querystring to search by that username.
+    """Movie detail page that lists important movie details. ALso displays streaming availability by country or by streaming provider, based on what user selects.
+    Can take a 'country' parameter in querystring to search by that username.
     """
+    #user selected country for sreaming info
+    country_selection = request.args.get('country')
+    if not country_selection: #default to US if no country picked
+        country_selection = 'US'
     
-    regions_url = "https://api.themoviedb.org/3/watch/providers/regions?language=en-US"
+    #list of countries with streaming data
+    region_data = get_country_list()
+    
+    #list of streamingn providers for movies
+    streaming_providers = movie_provider_list()
 
-    headers = {
-        "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
-    }
-    region_response = requests.get(regions_url, headers=headers)
-    region_data = region_response.json()
-
-    # GET request for movie detail and streaming info
-    movie_url = f"https://api.themoviedb.org/3/movie/{movie_id}?append_to_response=watch%2Fproviders&language=en-US"
-    headers = {
-        "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
-    }
-    movie_response = requests.get(movie_url, headers=headers)
-    movie_data = movie_response.json()
+    # movie detail including streaming provider info
+    movie_data = movie_details(movie_id)
     
     return render_template('movie_detail.html',
                             movie_data=movie_data,
-                            region_data=region_data)
+                            streaming_providers=streaming_providers,
+                            region_data=region_data,
+                            country_selection=country_selection)
 
     
 @app.route('/search/tv')
