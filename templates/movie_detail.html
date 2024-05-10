@@ -112,7 +112,7 @@
                                 {% for provider in movie_data['watch/providers'].results[country][type] %}
                                 <!-- <p class="mx-3">{{provider.provider_id}}</p> -->
                                 <!-- The bug is somewhere here should probably make another route to handle the sorting by streaming providers-->
-                                    {% if provider.provider_id == streaming_provider_selected %}
+                                    {% if provider.provider_id == 8 %}
                                         <p class="mx-2">{{provider.provider_id}}</p>
                                         <p>{{streaming_provider_selected}}</p>
 

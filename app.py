@@ -285,11 +285,14 @@ def movie_detail(movie_id):
     Can take a 'country' parameter in querystring to search by that username.
     """
     #user selected country for sreaming info
-    country_selection = request.args.get('country')
+    # country_selection = request.args.get('country')
+    country_selection = 'US'
     if not country_selection: #default to US if no country picked
         country_selection = 'US'
     
     streaming_provider_selected = request.args.get('streamingProvider')
+    print(f'Streaming provider selected {streaming_provider_selected}')
+    print(type(streaming_provider_selected)) # this is outputing a string need to be changed to an int!!!!
     if not streaming_provider_selected: #default to US if no country picked
         streaming_provider_selected = 8
         # streaming_provider_selected = {
