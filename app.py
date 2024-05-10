@@ -289,14 +289,15 @@ def movie_detail(movie_id):
     if not country_selection: #default to US if no country picked
         country_selection = 'US'
     
-    # streaming_provider_selected = request.args.get('country')
-    # if not streaming_provider_selected: #default to US if no country picked
-    #     streaming_provider_selected = {
-    #         'logo_path': '/pbpMk2JmcoNnQwx5JGpXngfoWtp.jpg',
-    #         "provider_id": 8,
-    #         "provider_name": "Netflix",
-    #         "display_priority": 0
-    #     }
+    streaming_provider_selected = request.args.get('streamingProvider')
+    if not streaming_provider_selected: #default to US if no country picked
+        streaming_provider_selected = 8
+        # streaming_provider_selected = {
+        #     'logo_path': '/pbpMk2JmcoNnQwx5JGpXngfoWtp.jpg',
+        #     "provider_id": 8,
+        #     "provider_name": "Netflix",
+        #     "display_priority": 0
+        # }
     
     #list of countries with streaming data
     region_data = get_country_list()
@@ -311,7 +312,8 @@ def movie_detail(movie_id):
                             movie_data=movie_data,
                             streaming_providers=streaming_providers,
                             region_data=region_data,
-                            country_selection=country_selection)
+                            country_selection=country_selection,
+                            streaming_provider_selected=streaming_provider_selected)
 
     
 @app.route('/search/tv')

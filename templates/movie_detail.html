@@ -45,12 +45,14 @@
     <div class="container-fluid">
         <div class="row">
             <!-- rows containing streaming providers seperated by type(called type) -->
-            <div class="col">
+            <div class="col-9">
+                <!-- loop over the provider types(ex: rent, buy) for selected country -->
                 {% for type in movie_data['watch/providers'].results[country_selection] %}
                     {% if type != 'link'%}
                         <div class="container">
                             <h3>{{type}}</h3>
                             <div class="d-flex flex-row mb-3">
+                                <!-- loop over provider(Netflix, MAX) for the current provider type -->
                                 {% for provider in movie_data['watch/providers'].results[country_selection][type] %}
                                     <div class="p-2">
                                         <img src="https://image.tmdb.org/t/p/w92{{provider.logo_path}}" alt="{{provider.provider_name}}" class="img-fluid">
@@ -96,28 +98,60 @@
 <!-- This div section contains streaming data by streaming provider. Testing with Netflix hardcoded -->
 <div class="container-fluid">
     <div class="row">
-        <!-- rows containing streaming providers seperated by type(called option) -->
-        <div class="col">
-            <h3>Netflix</h3>
+        <!-- column containing streaming providers seperated by type(called option) -->
+        <div class="col-9">
+            <h3 id="net">Netflix</h3>
             <div class="container">
                 <div class="d-flex flex-row mb-3">
+                    <!-- loop over countries from watch provider result -->
                     {% for country in movie_data['watch/providers'].results %}
-                        <div class="d-flex flex-row mb-3">
-                            {% for type in movie_data['watch/providers'].results[country] %}
-                                {% if type != 'link'%}
-                                    {% for provider in movie_data['watch/providers'].results[country][type] %}
-                                        {% if provider.id == 8%}
-                                        <div class="p-2">
-                                            <img src="https://image.tmdb.org/t/p/w92{{provider.logo_path}}" alt="{{provider.provider_name}}" class="img-fluid">
-                                        </div>
-                                    {% endfor %}
-                                {% endif %}
-                            {% endfor %}
-                        </div>
+                        <!-- loop over the provider types(ex: rent, buy) for selected country -->
+                        {% for type in movie_data['watch/providers'].results[country] %}
+                            {% if type != 'link'%}
+                                <!-- loop over provider(Netflix, MAX) for the current provider type -->
+                                {% for provider in movie_data['watch/providers'].results[country][type] %}
+                                <!-- <p class="mx-3">{{provider.provider_id}}</p> -->
+                                <!-- The bug is somewhere here should probably make another route to handle the sorting by streaming providers-->
+                                    {% if provider.provider_id == streaming_provider_selected %}
+                                        <p class="mx-2">{{provider.provider_id}}</p>
+                                        <p>{{streaming_provider_selected}}</p>
+
+                                        <!-- <span class="me-1 fi fi-{{country.lower()}}"></span> -->
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
                     {% endfor %}
                 </div>
             </div>
         </div>
+        <div class="col-3">
+            <form action="/movie/{{movie_data.id}}">
+                <div class="row mb-3">
+                    <div class="col-sm-10">
+                        <div class="form-group">
+                            <select class="" id="streamingProvider" name="streamingProvider" required>
+                                {% for provider in streaming_providers.results %}
+                                    {% if provider.provider_id == streaming_provider_selected %}
+                                        <option value="{{provider.provider_id}}" selected>
+                                            {{provider.provider_name}}
+                                        </option>
+                                    {% else %}
+                                        <option value="{{provider.provider_id}}">
+                                            {{provider.provider_name}}
+                                        </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <!-- <p>{{streaming_provider_selected}}</p> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>        
+            </form>    
+        </div>        
     </div>
 </div>
 {% endblock %}
@@ -149,3 +183,6 @@
         </div>        
     </form>    
 </div> -->
+
+
+                       <!-- <div class="fib fib-{{country.lower()}}""></div> -->
