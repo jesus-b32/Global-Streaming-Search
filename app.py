@@ -1,6 +1,4 @@
 import os
-import requests
-import json
 
 from flask import Flask, render_template, request, flash, redirect, session, g, url_for
 from flask_debugtoolbar import DebugToolbarExtension
@@ -9,8 +7,9 @@ from sqlalchemy.exc import IntegrityError
 from forms import UserAddForm, LoginForm, UserEditForm
 from models import db, connect_db, User, Region, Video, VideoList, Genre, GenreList, StreamingProvider, StreamingList
 
+import api
+
 CURR_USER_KEY = "curr_user"
-# BASE_URL = 
 
 app = Flask(__name__)
 # Get DB_URI from environ variable (useful for production/testing) or,
@@ -209,74 +208,25 @@ def list_users():
 # Movie routes:
 
 @app.route('/search/movie')
-def movie_search():
+def movie_searching():
     """Search page with listing of movies, TV shows, and people.
 
     Can take a 'q' parameter in querystring to search by that username.
     """
 
     search = request.args.get('search')
-    movie_url = f"https://api.themoviedb.org/3/search/movie?query={search}&include_adult=false&language=en-US&page=1"
-
-    headers = {
-        "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
-    }
-    # movies request
-    movie_response = requests.get(movie_url, headers=headers)
-    movie_data = movie_response.json()
-    
+    movie_data = api.movie_search(search)
         
     return render_template('movie_results.html',
                             search=search,
                             movie_data=movie_data)
 
-def get_country_list():
-    """Returns JSON of countries with streaming data from TMDB API
 
-    Returns:
-        _type_: JSON
-    """
-    url = "https://api.themoviedb.org/3/watch/providers/regions?language=en-US"
-
-    headers = {
-        "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
-    }
-    response = requests.get(url, headers=headers)
-    return response.json()    
-
-
-def movie_details(movie_id):
-    """Returns JSON of movie detials including streaming provider data for that movies from TMDB API
-
-    Returns:
-        _type_: JSON
-    """
-    url = f"https://api.themoviedb.org/3/movie/{movie_id}?append_to_response=watch%2Fproviders&language=en-US"
-    headers = {
-        "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
-    }
-    response = requests.get(url, headers=headers)
-    return response.json() 
-
-
-def movie_provider_list():
-    """Returns JSON of streaming providers for movies from TMDB API
-
-    Returns:
-        _type_: JSON
-    """
-    url = "https://api.themoviedb.org/3/watch/providers/movie?language=en-US"
-
-    headers = {
-    "accept": "application/json",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
-}
-
-    response = requests.get(url, headers=headers)
-    return response.json()    
+def get_provider_name(id, provider_data):
+    for provider in provider_data['results']:
+        if provider['provider_id'] == id:
+            return provider['provider_name']
+    
 
     
 @app.route('/movie/<int:movie_id>')
@@ -285,58 +235,45 @@ def movie_detail(movie_id):
     Can take a 'country' parameter in querystring to search by that username.
     """
     #user selected country for sreaming info
-    # country_selection = request.args.get('country')
-    country_selection = 'US'
-    if not country_selection: #default to US if no country picked
-        country_selection = 'US'
+    country_selected = request.args.get('country')
+    if not country_selected: #default to US if no country picked
+        country_selected = 'US'
     
-    streaming_provider_selected = request.args.get('streamingProvider')
-    print(f'Streaming provider selected {streaming_provider_selected}')
-    print(type(streaming_provider_selected)) # this is outputing a string need to be changed to an int!!!!
-    if not streaming_provider_selected: #default to US if no country picked
-        streaming_provider_selected = 8
-        # streaming_provider_selected = {
-        #     'logo_path': '/pbpMk2JmcoNnQwx5JGpXngfoWtp.jpg',
-        #     "provider_id": 8,
-        #     "provider_name": "Netflix",
-        #     "display_priority": 0
-        # }
+    provider_selected = request.args.get('streamingProvider', type=int)
+    #default to netflix if no provider picked
+    if not provider_selected:
+        provider_selected = 8
     
     #list of countries with streaming data
-    region_data = get_country_list()
+    region_data = api.get_country_list()
     
     #list of streamingn providers for movies
-    streaming_providers = movie_provider_list()
-
+    providers = api.movie_provider_list()
+    
+    #gets the name of the provider user selected
+    provider_name = get_provider_name(provider_selected, providers)
+    
     # movie detail including streaming provider info
-    movie_data = movie_details(movie_id)
+    movie_data = api.movie_details(movie_id)
     
     return render_template('movie_detail.html',
                             movie_data=movie_data,
-                            streaming_providers=streaming_providers,
+                            providers=providers,
                             region_data=region_data,
-                            country_selection=country_selection,
-                            streaming_provider_selected=streaming_provider_selected)
+                            country_selected=country_selected,
+                            provider_selected=provider_selected,
+                            provider_name=provider_name)
 
     
 @app.route('/search/tv')
-def tv_search():
+def tv_searching():
     """Search page with listing of movies, TV shows, and people.
 
     Can take a 'q' parameter in querystring to search by that username.
     """
 
     search = request.args.get('search')
-    tv_url = f"https://api.themoviedb.org/3/search/tv?query={search}&include_adult=false&language=en-US&page=1"
-
-    headers = {
-        "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
-    }
-    
-    # tv shows request
-    tv_response = requests.get(tv_url, headers=headers)
-    tv_data = tv_response.json()
+    tv_data = api.tv_search(search)
         
     return render_template('tv_results.html',
                             search=search,

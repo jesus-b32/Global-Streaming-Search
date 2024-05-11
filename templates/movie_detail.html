@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <!-- This div section contains all import movie details -->
     <div class="container-fluid">
         <div class="card mb-3">
@@ -41,19 +42,20 @@
         </div>
     </div>
 
+
 <!-- This div section contains streaming data by country -->
     <div class="container-fluid">
         <div class="row">
             <!-- rows containing streaming providers seperated by type(called type) -->
             <div class="col-9">
                 <!-- loop over the provider types(ex: rent, buy) for selected country -->
-                {% for type in movie_data['watch/providers'].results[country_selection] %}
+                {% for type in movie_data['watch/providers'].results[country_selected] %}
                     {% if type != 'link'%}
                         <div class="container">
                             <h3>{{type}}</h3>
                             <div class="d-flex flex-row mb-3">
                                 <!-- loop over provider(Netflix, MAX) for the current provider type -->
-                                {% for provider in movie_data['watch/providers'].results[country_selection][type] %}
+                                {% for provider in movie_data['watch/providers'].results[country_selected][type] %}
                                     <div class="p-2">
                                         <img src="https://image.tmdb.org/t/p/w92{{provider.logo_path}}" alt="{{provider.provider_name}}" class="img-fluid">
                                     </div>
@@ -63,6 +65,7 @@
                     {% endif %}
                 {% endfor %}
             </div>
+
             <!-- search bar for user to select country they want streaming data for -->
             <div class="col-3">
                 <form action="/movie/{{movie_data.id}}">
@@ -71,7 +74,7 @@
                             <div class="form-group">
                                 <select class="" id="country" name="country" required>
                                     {% for country in region_data.results %}
-                                        {% if country.iso_3166_1 == country_selection %}
+                                        {% if country.iso_3166_1 == country_selected %}
                                             <option value="{{country.iso_3166_1}}" selected>
                                                 {{country.native_name}}
                                             </option>
@@ -95,12 +98,12 @@
 
 
 
-<!-- This div section contains streaming data by streaming provider. Testing with Netflix hardcoded -->
+<!-- This div section contains streaming data by streaming provider. -->
 <div class="container-fluid">
     <div class="row">
-        <!-- column containing streaming providers seperated by type(called option) -->
+        <!-- column displays all countries flags where the movie is available for the selected provider -->
         <div class="col-9">
-            <h3 id="net">Netflix</h3>
+            <h3 id="net">{{provider_name}}</h3>
             <div class="container">
                 <div class="d-flex flex-row mb-3">
                     <!-- loop over countries from watch provider result -->
@@ -110,13 +113,9 @@
                             {% if type != 'link'%}
                                 <!-- loop over provider(Netflix, MAX) for the current provider type -->
                                 {% for provider in movie_data['watch/providers'].results[country][type] %}
-                                <!-- <p class="mx-3">{{provider.provider_id}}</p> -->
-                                <!-- The bug is somewhere here should probably make another route to handle the sorting by streaming providers-->
-                                    {% if provider.provider_id == 8 %}
-                                        <p class="mx-2">{{provider.provider_id}}</p>
-                                        <p>{{streaming_provider_selected}}</p>
-
-                                        <!-- <span class="me-1 fi fi-{{country.lower()}}"></span> -->
+                                    {% if provider.provider_id == provider_selected %}
+                                        <!-- flags -->
+                                        <span class="me-1 fi fi-{{country.lower()}}"></span>
                                     {% endif %}
                                 {% endfor %}
                             {% endif %}
@@ -125,14 +124,17 @@
                 </div>
             </div>
         </div>
+
+        <!-- streaming_providers search bar list -->
         <div class="col-3">
             <form action="/movie/{{movie_data.id}}">
                 <div class="row mb-3">
                     <div class="col-sm-10">
                         <div class="form-group">
                             <select class="" id="streamingProvider" name="streamingProvider" required>
-                                {% for provider in streaming_providers.results %}
-                                    {% if provider.provider_id == streaming_provider_selected %}
+                                <!-- loop over list of poviders -->
+                                {% for provider in providers.results %}
+                                    {% if provider.provider_id == provider_selected %}
                                         <option value="{{provider.provider_id}}" selected>
                                             {{provider.provider_name}}
                                         </option>
@@ -143,7 +145,6 @@
                                     {% endif %}
                                 {% endfor %}
                             </select>
-                            <!-- <p>{{streaming_provider_selected}}</p> -->
                         </div>
                     </div>
                 </div>
@@ -155,34 +156,3 @@
     </div>
 </div>
 {% endblock %}
-
-        <!-- search bar for user to select country they want streaming data for -->
-<!-- <div class="col-3">
-    <form action="/movie/{{movie_data.id}}">
-        <div class="row mb-3">
-            <div class="col-sm-10">
-                <div class="form-group">
-                    <select class="" id="country" name="country" required>
-                        {% for country in region_data.results %}
-                            {% if country.iso_3166_1 == country_selection %}
-                                <option value="{{country.iso_3166_1}}" selected>
-                                    {{country.native_name}}
-                                </option>
-                            {% else %}
-                                <option value="{{country.iso_3166_1}}">
-                                    {{country.native_name}}
-                                </option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="">
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </div>        
-    </form>    
-</div> -->
-
-
-                       <!-- <div class="fib fib-{{country.lower()}}""></div> -->
