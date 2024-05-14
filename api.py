@@ -59,6 +59,37 @@ def tv_search(search):
     # tv shows request
     response = requests.get(url, headers=headers)
     return response.json()
+
+def tv_details(tv_id):
+    """Returns JSON of movie detials including streaming provider data for that movies from TMDB API
+
+    Returns:
+        _type_: JSON
+    """
+    url = f"https://api.themoviedb.org/3/tv/{tv_id}?append_to_response=watch%2Fproviders&language=en-US"
+    headers = {
+        "accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
+    }
+    response = requests.get(url, headers=headers)
+    return response.json() 
+
+
+def tv_provider_list():
+    """Returns JSON of streaming providers for movies from TMDB API
+
+    Returns:
+        _type_: JSON
+    """
+    url = "https://api.themoviedb.org/3/watch/providers/tv?language=en-US"
+
+    headers = {
+    "accept": "application/json",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
+    }
+
+    response = requests.get(url, headers=headers)
+    return response.json()    
 ##############################################################################
 
 

@@ -291,41 +291,41 @@ def tv_searching():
     
     
     
-# @app.route('/tv/<int:tv_id>')
-# def tv_detail(tv_id):
-#     """Movie detail page that lists important movie details. ALso displays streaming availability by country or by streaming provider, based on what user selects.
-#     Can take a 'country' parameter in querystring to search by that username.
-#     """
-#     #user selected country for sreaming info
-#     country_selected = request.args.get('country')
-#     if not country_selected: #default to US if no country picked
-#         country_selected = 'US'
+@app.route('/tv/<int:tv_id>')
+def tv_detail(tv_id):
+    """TV detail page that lists important tv show details. ALso displays streaming availability by country or by streaming provider, based on what user selects.
+    Can take a 'country' parameter in querystring to search by that username.
+    """
+    #user selected country for sreaming info
+    country_selected = request.args.get('country')
+    if not country_selected: #default to US if no country picked
+        country_selected = 'US'
     
-#     provider_selected = request.args.get('streamingProvider', type=int)
-#     #default to netflix if no provider picked
-#     if not provider_selected:
-#         provider_selected = 8
+    provider_selected = request.args.get('streamingProvider', type=int)
+    #default to netflix if no provider picked
+    if not provider_selected:
+        provider_selected = 8
     
-#     #list of countries with streaming data
-#     countries = api.get_country_list()
+    #list of countries with streaming data
+    countries = api.get_country_list()
     
-#     #gets the name of the country user selected
-#     country_name = get_country_name(country_selected, countries)
+    #gets the name of the country user selected
+    country_name = get_country_name(country_selected, countries)
     
-#     #list of streamingn providers for movies
-#     providers = api.movie_provider_list()
+    #list of streamingn providers for movies
+    providers = api.tv_provider_list()
     
-#     #gets the name of the provider user selected
-#     provider_name = get_provider_name(provider_selected, providers)
+    #gets the name of the provider user selected
+    provider_name = get_provider_name(provider_selected, providers)
     
-#     # movie detail including streaming provider info
-#     movie_data = api.movie_details(movie_id)
+    # tv show detail including streaming provider info
+    tv_data = api.tv_details(tv_id)
     
-#     return render_template('movie_detail.html',
-#                             movie_data=movie_data,
-#                             providers=providers,
-#                             countries=countries,
-#                             country_selected=country_selected,
-#                             provider_selected=provider_selected,
-#                             provider_name=provider_name,
-#                             country_name=country_name)
+    return render_template('tv_detail.html',
+                            tv_data=tv_data,
+                            providers=providers,
+                            countries=countries,
+                            country_selected=country_selected,
+                            provider_selected=provider_selected,
+                            provider_name=provider_name,
+                            country_name=country_name)
