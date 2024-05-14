@@ -74,26 +74,20 @@
             <!-- search bar for user to select country they want streaming data for -->
             <div class="col-3">
                 <form action="/movie/{{movie_data.id}}">
-                    <div class="row mb-3">
-                        <div class="col-sm-10">
-                            <div class="form-group">
-                                <select class="" id="country" name="country" required>
-                                    {% for country in countries.results %}
-                                        {% if country.iso_3166_1 == country_selected %}
-                                            <option value="{{country.iso_3166_1}}" selected>
-                                                {{country.native_name}}
-                                            </option>
-                                        {% else %}
-                                            <option value="{{country.iso_3166_1}}">
-                                                {{country.native_name}}
-                                            </option>
-                                        {% endif %}
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="">
+                    <select id="country" name="country" required>
+                        {% for country in countries.results %}
+                            {% if country.iso_3166_1 == country_selected %}
+                                <option value="{{country.iso_3166_1}}" selected>
+                                    {{country.native_name}}
+                                </option>
+                            {% else %}
+                                <option value="{{country.iso_3166_1}}">
+                                    {{country.native_name}}
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <div class="mt-3">
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </div>        
                 </form>    
@@ -136,27 +130,21 @@
         <!-- streaming_providers search bar list -->
         <div class="col-3">
             <form action="/movie/{{movie_data.id}}">
-                <div class="row mb-3">
-                    <div class="col-sm-10">
-                        <div class="form-group">
-                            <select class="" id="streamingProvider" name="streamingProvider" required>
-                                <!-- loop over list of poviders -->
-                                {% for provider in providers.results %}
-                                    {% if provider.provider_id == provider_selected %}
-                                        <option value="{{provider.provider_id}}" selected>
-                                            {{provider.provider_name}}
-                                        </option>
-                                    {% else %}
-                                        <option value="{{provider.provider_id}}">
-                                            {{provider.provider_name}}
-                                        </option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="">
+                <select id="streamingProvider" name="streamingProvider" required>
+                    <!-- loop over list of poviders -->
+                    {% for provider in providers.results %}
+                        {% if provider.provider_id == provider_selected %}
+                            <option value="{{provider.provider_id}}" selected>
+                                {{provider.provider_name}}
+                            </option>
+                        {% else %}
+                            <option value="{{provider.provider_id}}">
+                                {{provider.provider_name}}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <div class="mt-3">
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>        
             </form>    
