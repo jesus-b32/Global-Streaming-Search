@@ -2,6 +2,7 @@
     background-color: aqua;
 }
 
-/* #flag {
-    height: 500px;
-} */
+.flag {
+    width: 100px;
+    aspect-ratio: 4/3;
+}

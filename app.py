@@ -226,6 +226,12 @@ def get_provider_name(id, provider_data):
     for provider in provider_data['results']:
         if provider['provider_id'] == id:
             return provider['provider_name']
+        
+
+def get_country_name(id, country_data):
+    for country in country_data['results']:
+        if country['iso_3166_1'] == id:
+            return country['native_name']
     
 
     
@@ -245,7 +251,10 @@ def movie_detail(movie_id):
         provider_selected = 8
     
     #list of countries with streaming data
-    region_data = api.get_country_list()
+    countries = api.get_country_list()
+    
+    #gets the name of the country user selected
+    country_name = get_country_name(country_selected, countries)
     
     #list of streamingn providers for movies
     providers = api.movie_provider_list()
@@ -259,10 +268,11 @@ def movie_detail(movie_id):
     return render_template('movie_detail.html',
                             movie_data=movie_data,
                             providers=providers,
-                            region_data=region_data,
+                            countries=countries,
                             country_selected=country_selected,
                             provider_selected=provider_selected,
-                            provider_name=provider_name)
+                            provider_name=provider_name,
+                            country_name=country_name)
 
     
 @app.route('/search/tv')
@@ -278,3 +288,44 @@ def tv_searching():
     return render_template('tv_results.html',
                             search=search,
                             tv_data=tv_data)
+    
+    
+    
+# @app.route('/tv/<int:tv_id>')
+# def tv_detail(tv_id):
+#     """Movie detail page that lists important movie details. ALso displays streaming availability by country or by streaming provider, based on what user selects.
+#     Can take a 'country' parameter in querystring to search by that username.
+#     """
+#     #user selected country for sreaming info
+#     country_selected = request.args.get('country')
+#     if not country_selected: #default to US if no country picked
+#         country_selected = 'US'
+    
+#     provider_selected = request.args.get('streamingProvider', type=int)
+#     #default to netflix if no provider picked
+#     if not provider_selected:
+#         provider_selected = 8
+    
+#     #list of countries with streaming data
+#     countries = api.get_country_list()
+    
+#     #gets the name of the country user selected
+#     country_name = get_country_name(country_selected, countries)
+    
+#     #list of streamingn providers for movies
+#     providers = api.movie_provider_list()
+    
+#     #gets the name of the provider user selected
+#     provider_name = get_provider_name(provider_selected, providers)
+    
+#     # movie detail including streaming provider info
+#     movie_data = api.movie_details(movie_id)
+    
+#     return render_template('movie_detail.html',
+#                             movie_data=movie_data,
+#                             providers=providers,
+#                             countries=countries,
+#                             country_selected=country_selected,
+#                             provider_selected=provider_selected,
+#                             provider_name=provider_name,
+#                             country_name=country_name)

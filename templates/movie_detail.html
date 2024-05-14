@@ -48,15 +48,20 @@
         <div class="row">
             <!-- rows containing streaming providers seperated by type(called type) -->
             <div class="col-9">
+                <h2 id="net">{{country_name}}</h2>
                 <!-- loop over the provider types(ex: rent, buy) for selected country -->
                 {% for type in movie_data['watch/providers'].results[country_selected] %}
                     {% if type != 'link'%}
                         <div class="container">
-                            <h3>{{type}}</h3>
-                            <div class="d-flex flex-row mb-3">
+                            {% if type == 'flatrate' %}
+                                <h3>Stream</h3>
+                            {% else %}
+                                <h3>{{type.capitalize()}}</h3>
+                            {% endif %}
+                            <div class="d-flex flex-wrap">
                                 <!-- loop over provider(Netflix, MAX) for the current provider type -->
                                 {% for provider in movie_data['watch/providers'].results[country_selected][type] %}
-                                    <div class="p-2">
+                                    <div class="me-3 mb-3">
                                         <img src="https://image.tmdb.org/t/p/w92{{provider.logo_path}}" alt="{{provider.provider_name}}" class="img-fluid">
                                     </div>
                                 {% endfor %}
@@ -73,7 +78,7 @@
                         <div class="col-sm-10">
                             <div class="form-group">
                                 <select class="" id="country" name="country" required>
-                                    {% for country in region_data.results %}
+                                    {% for country in countries.results %}
                                         {% if country.iso_3166_1 == country_selected %}
                                             <option value="{{country.iso_3166_1}}" selected>
                                                 {{country.native_name}}
@@ -103,9 +108,9 @@
     <div class="row">
         <!-- column displays all countries flags where the movie is available for the selected provider -->
         <div class="col-9">
-            <h3 id="net">{{provider_name}}</h3>
+            <h2 id="net">{{provider_name}}</h2>
             <div class="container">
-                <div class="d-flex flex-row mb-3">
+                <div class="d-flex flex-wrap">
                     <!-- loop over countries from watch provider result -->
                     {% for country in movie_data['watch/providers'].results %}
                         <!-- loop over the provider types(ex: rent, buy) for selected country -->
@@ -115,7 +120,10 @@
                                 {% for provider in movie_data['watch/providers'].results[country][type] %}
                                     {% if provider.provider_id == provider_selected %}
                                         <!-- flags -->
-                                        <span class="me-1 fi fi-{{country.lower()}}"></span>
+                                        <div class="me-3 mb-3">
+                                            <p>{{country}}</p>
+                                            <img src="/static/images/flags/{{country.lower()}}.svg" alt="{{country}}" class="img-fluid flag">
+                                        </div>
                                     {% endif %}
                                 {% endfor %}
                             {% endif %}
