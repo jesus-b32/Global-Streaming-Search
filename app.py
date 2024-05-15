@@ -251,7 +251,7 @@ def movie_detail(movie_id):
         provider_selected = 8
     
     #list of countries with streaming data
-    countries = api.get_country_list()
+    countries = api.country_list()
     
     #gets the name of the country user selected
     country_name = get_country_name(country_selected, countries)
@@ -307,7 +307,7 @@ def tv_detail(tv_id):
         provider_selected = 8
     
     #list of countries with streaming data
-    countries = api.get_country_list()
+    countries = api.country_list()
     
     #gets the name of the country user selected
     country_name = get_country_name(country_selected, countries)

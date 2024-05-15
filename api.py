@@ -96,7 +96,7 @@ def tv_provider_list():
 
 
 ############# Watch Provider API calls ###################################
-def get_country_list():
+def country_list():
     """Returns JSON of countries with streaming data from TMDB API
 
     Returns:
@@ -110,3 +110,21 @@ def get_country_list():
     }
     response = requests.get(url, headers=headers)
     return response.json()    
+
+
+############# Configuration API calls ###################################
+def all_countries():
+    """Returns JSON of countries (ISO 3166-1 tags) used throughout TMDB
+
+    Returns:
+        _type_: JSON
+    """
+    url = "https://api.themoviedb.org/3/configuration/countries?language=en-US"
+
+    headers = {
+        "accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
+    }
+
+    response = requests.get(url, headers=headers)
+    return response.json()
