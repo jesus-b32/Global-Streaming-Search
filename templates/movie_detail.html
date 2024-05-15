@@ -47,8 +47,9 @@
     <div class="container-fluid">
         <div class="row">
             <!-- rows containing streaming providers seperated by type(called type) -->
+            <!-- country_name -->
             <div class="col-9">
-                <h2 id="net">{{country_name}}</h2>
+                <h2 id="net">{{country.name}}</h2>
                 <!-- loop over the provider types(ex: rent, buy) for selected country -->
                 {% for type in movie_data['watch/providers'].results[country_selected] %}
                     {% if type != 'link'%}

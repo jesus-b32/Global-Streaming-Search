@@ -254,7 +254,8 @@ def movie_detail(movie_id):
     countries = api.country_list()
     
     #gets the name of the country user selected
-    country_name = get_country_name(country_selected, countries)
+    country = db.get_or_404(Region, country_selected)
+    # all_countries = db.
     
     #list of streamingn providers for movies
     providers = api.movie_provider_list()
@@ -272,7 +273,7 @@ def movie_detail(movie_id):
                             country_selected=country_selected,
                             provider_selected=provider_selected,
                             provider_name=provider_name,
-                            country_name=country_name)
+                            country=country)
 
     
 @app.route('/search/tv')
