@@ -35,11 +35,11 @@ class User(db.Model):
         autoincrement=True,
     )
 
-    email = db.Column(
-        db.Text,
-        nullable=False,
-        unique=True,
-    )
+    # email = db.Column(
+    #     db.Text,
+    #     nullable=False,
+    #     unique=True,
+    # )
 
     username = db.Column(
         db.Text,
@@ -52,16 +52,21 @@ class User(db.Model):
         nullable=False,
     )    
 
-    image_url = db.Column(
+    profile_image = db.Column(
         db.Text,
         default="/static/images/default-pic.jpg"
     )
 
-    def __init__(self, email, username, password, image_url):
-        self.email = email
+    def __init__(self, username, password, profile_image):
         self.username = username
         self.password = self.password_hashing(password)
-        self.image_url = image_url
+        self.profile_image = profile_image
+
+    # def __init__(self, email, username, password, image_url):
+    #     self.email = email
+    #     self.username = username
+    #     self.password = self.password_hashing(password)
+    #     self.image_url = image_url
         
     @staticmethod
     def password_hashing(password_plaintext):
@@ -70,7 +75,7 @@ class User(db.Model):
 
 
     def __repr__(self):
-        return f"<User #{self.id}: {self.username}, {self.email}>"
+        return f"<User #{self.id}: {self.username}>"
 
     # @classmethod
     # def signup(cls, username, email, password, image_url):
@@ -232,144 +237,144 @@ class VideoListVideos(db.Model):
 
 ############################################################################
 #GENRES
-class Genre(db.Model):
-    """An individual message ("warble")."""
+# class Genre(db.Model):
+#     """An individual message ("warble")."""
 
-    __tablename__ = 'genres'
+#     __tablename__ = 'genres'
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        nullable=False,
-    )
+#     id = db.Column(
+#         db.Integer,
+#         primary_key=True,
+#         nullable=False,
+#     )
 
-    name = db.Column(
-        db.Text,
-        nullable=False,
-    )
-    genre_lists = db.relationship(
-        'GenreList',
-        secondary = 'genre_list_genres',
-        back_populates = 'genres'
-        )
+#     name = db.Column(
+#         db.Text,
+#         nullable=False,
+#     )
+#     genre_lists = db.relationship(
+#         'GenreList',
+#         secondary = 'genre_list_genres',
+#         back_populates = 'genres'
+#         )
 
-    def __repr__(self):
-        return f"<Genre #{self.id}: {self.name}>"
+#     def __repr__(self):
+#         return f"<Genre #{self.id}: {self.name}>"
 
-class GenreList(db.Model):
-    """An individual message ("warble")."""
+# class GenreList(db.Model):
+#     """An individual message ("warble")."""
 
-    __tablename__ = 'genre_lists'
+#     __tablename__ = 'genre_lists'
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        autoincrement=True,
-    )
+#     id = db.Column(
+#         db.Integer,
+#         primary_key=True,
+#         autoincrement=True,
+#     )
 
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
-        nullable=False,
-    )
+#     user_id = db.Column(
+#         db.Integer,
+#         db.ForeignKey('users.id', ondelete='CASCADE'),
+#         nullable=False,
+#     )
     
-    genres = db.relationship(
-        'Genre',
-        secondary = 'genre_list_genres',
-        back_populates = 'genre_lists'
-    )
+#     genres = db.relationship(
+#         'Genre',
+#         secondary = 'genre_list_genres',
+#         back_populates = 'genre_lists'
+#     )
 
-    def __repr__(self):
-        return f"<List #{self.id}: {self.name}, {self.user_id}>"
+#     def __repr__(self):
+#         return f"<List #{self.id}: {self.name}, {self.user_id}>"
 
 
-#join table
-class GenreListGenres(db.Model):
-    'genre_list_genres'
-    __tablename__ = 'genre_list_genres'
-    id = db.Column(db.Integer,
-                    primary_key=True,
-                    autoincrement=True)       
-    genre_id = db.Column(db.Integer, 
-                        db.ForeignKey('genres.id'))
-    genre_list_id = db.Column(db.Integer, 
-                        db.ForeignKey('genre_lists.id'))
+# #join table
+# class GenreListGenres(db.Model):
+#     'genre_list_genres'
+#     __tablename__ = 'genre_list_genres'
+#     id = db.Column(db.Integer,
+#                     primary_key=True,
+#                     autoincrement=True)       
+#     genre_id = db.Column(db.Integer, 
+#                         db.ForeignKey('genres.id'))
+#     genre_list_id = db.Column(db.Integer, 
+#                         db.ForeignKey('genre_lists.id'))
 
-####################################################################################
+# ####################################################################################
 
-#####################################################################################
-#STREAMING PROVIDERS
-class StreamingProvider(db.Model):
-    """An individual message ("warble")."""
+# #####################################################################################
+# #STREAMING PROVIDERS
+# class StreamingProvider(db.Model):
+#     """An individual message ("warble")."""
 
-    __tablename__ = 'streaming_providers'
+#     __tablename__ = 'streaming_providers'
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        nullable=False,
-    )
+#     id = db.Column(
+#         db.Integer,
+#         primary_key=True,
+#         nullable=False,
+#     )
 
-    name = db.Column(
-        db.Text,
-        nullable=False,
-    )
+#     name = db.Column(
+#         db.Text,
+#         nullable=False,
+#     )
 
-    logo_path = db.Column(
-        db.Text,
-        nullable=False,
-    )
+#     logo_path = db.Column(
+#         db.Text,
+#         nullable=False,
+#     )
 
-    display_priority = db.Column(
-        db.Integer,
-        nullable=False,
-    )
+#     display_priority = db.Column(
+#         db.Integer,
+#         nullable=False,
+#     )
     
-    streaming_lists = db.relationship(
-        'StreamingList',
-        secondary = 'streaming_list_providers',
-        back_populates = 'streaming_providers'
-    )    
+#     streaming_lists = db.relationship(
+#         'StreamingList',
+#         secondary = 'streaming_list_providers',
+#         back_populates = 'streaming_providers'
+#     )    
 
-    def __repr__(self):
-        return f"<Streaming_service #{self.id}: {self.name}>"
+#     def __repr__(self):
+#         return f"<Streaming_service #{self.id}: {self.name}>"
 
-class StreamingList(db.Model):
-    """An individual message ("warble")."""
+# class StreamingList(db.Model):
+#     """An individual message ("warble")."""
 
-    __tablename__ = 'streaming_lists'
+#     __tablename__ = 'streaming_lists'
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        autoincrement=True,
-    )
+#     id = db.Column(
+#         db.Integer,
+#         primary_key=True,
+#         autoincrement=True,
+#     )
 
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
-        nullable=False,
-    )
+#     user_id = db.Column(
+#         db.Integer,
+#         db.ForeignKey('users.id', ondelete='CASCADE'),
+#         nullable=False,
+#     )
     
-    streaming_providers = db.relationship(
-        'StreamingProvider',
-        secondary = 'streaming_list_providers',
-        back_populates = 'streaming_lists'
-    )
+#     streaming_providers = db.relationship(
+#         'StreamingProvider',
+#         secondary = 'streaming_list_providers',
+#         back_populates = 'streaming_lists'
+#     )
 
-    def __repr__(self):
-        return f"<List #{self.id}: {self.name}, {self.user_id}>"
+#     def __repr__(self):
+#         return f"<List #{self.id}: {self.name}, {self.user_id}>"
 
 
-#join table
-class StreamingListProviders(db.Model):
-    'streaming_list_providers'
-    __tablename__ = 'streaming_list_providers'
-    id = db.Column(db.Integer,
-                    primary_key=True,
-                    autoincrement=True)      
-    streaming_provider_id = db.Column(db.Integer, db.ForeignKey('streaming_providers.id'))
-    streaming_list_id = db.Column(db.Integer, db.ForeignKey('streaming_lists.id'))
+# #join table
+# class StreamingListProviders(db.Model):
+#     'streaming_list_providers'
+#     __tablename__ = 'streaming_list_providers'
+#     id = db.Column(db.Integer,
+#                     primary_key=True,
+#                     autoincrement=True)      
+#     streaming_provider_id = db.Column(db.Integer, db.ForeignKey('streaming_providers.id'))
+#     streaming_list_id = db.Column(db.Integer, db.ForeignKey('streaming_lists.id'))
     
 
 #####################################################################################
