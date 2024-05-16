@@ -85,9 +85,14 @@ class TestModels:
             
             
             # assert add_video_to_list.id == 1
+            
             assert add_video_to_list.video_list_id == 1
             assert add_video_to_list.tmdb_id ==  2316
             assert add_video_to_list.media_type ==  'tv'
+            
+            # assert add_video_to_list.videos.video_list_id == 1
+            # assert add_video_to_list.videos.tmdb_id ==  2316
+            # assert add_video_to_list.videos.media_type ==  'tv'            
             
     class TestRegion:
         def test_new_region(self, client, new_region):

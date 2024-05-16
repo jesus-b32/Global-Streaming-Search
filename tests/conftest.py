@@ -111,31 +111,31 @@ def new_video_list(new_user):
 
 
 @pytest.fixture() 
-def add_video_to_list():
+def add_video_to_list(new_user, new_video_list):
 # def add_video_to_list(new_user, new_video, new_video_list):
     """
     
     """
-    user = User(
-        # email='test@gmail.com', 
-        username='test1',
-        password='password',
-        profile_image=None
+    # user = User(
+    #     # email='test@gmail.com', 
+    #     username='test1',
+    #     password='password',
+    #     profile_image=None
         
-        )
+    #     )
     # video = Video(
     #     tmdb_id = 2316, 
     #     media_type='tv'
     #     )
-    video_list = VideoList(
-        user_id = 1, 
-        name='favorites'
-        )
+    # video_list = VideoList(
+    #     user_id = 1, 
+    #     name='favorites'
+    #     )
     with app.app_context():
-        db.session.add_all([user, video_list])
-        db.session.commit()    
+        # db.session.add_all([new_user, new_video_list])
+        # db.session.commit()    
         video_list_videos = VideoListVideos(
-                            video_list_id = video_list.id,
+                            video_list_id = new_video_list.id,
                             tmdb_id = 2316,
                             media_type = 'tv')
     
@@ -144,6 +144,7 @@ def add_video_to_list():
         db.session.add(video_list_videos)
         db.session.commit()
         fetched_video_list = db.session.execute(db.select(VideoListVideos).filter_by(video_list_id=1, tmdb_id=2316, media_type='tv')).scalar_one()
+        # fetched_video_list = db.session.get(VideoList, new_video_list.id)
     return fetched_video_list
 
 @pytest.fixture() 
