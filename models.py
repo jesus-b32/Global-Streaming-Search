@@ -151,37 +151,38 @@ class Region(db.Model):
 
 #############################################################################
 #VIDEOS
-class Video(db.Model):
-    """An individual message ("warble")."""
 
-    __tablename__ = 'videos'
+# class Video(db.Model):
+#     """An individual message ("warble")."""
+
+#     __tablename__ = 'videos'
     
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        nullable=False,
-    )    
+#     id = db.Column(
+#         db.Integer,
+#         primary_key=True,
+#         nullable=False,
+#     )    
 
-    tmdb_id = db.Column(
-        db.Integer,
-        nullable=False,
-    )    
+#     tmdb_id = db.Column(
+#         db.Integer,
+#         nullable=False,
+#     )    
 
-    media_type = db.Column(
-        db.Text,
-        nullable=False,
-    )
+#     media_type = db.Column(
+#         db.Text,
+#         nullable=False,
+#     )
     
-    video_lists = db.relationship(
-        'VideoList', 
-        secondary = 'video_list_videos',
-        back_populates = 'videos'
-    )
+#     video_lists = db.relationship(
+#         'VideoList', 
+#         secondary = 'video_list_videos',
+#         back_populates = 'videos'
+#     )
 
 
 
-    def __repr__(self):
-        return f"<Video #{self.id}: {self.media_type} and {self.tmdb_id}>"
+#     def __repr__(self):
+#         return f"<Video #{self.id}: {self.media_type} and {self.tmdb_id}>"
     
 class VideoList(db.Model):
     """An individual message ("warble")."""
@@ -206,11 +207,13 @@ class VideoList(db.Model):
         nullable=False,
     )
     
-    videos = db.relationship(
-        'Video',
-        secondary = 'video_list_videos',
-        back_populates = 'video_lists'
-    )
+    videos = db.relationship('VideoListVideos')
+    
+    # videos = db.relationship(
+    #     'Video',
+    #     secondary = 'video_list_videos',
+    #     back_populates = 'video_lists'
+    # )
 
     def __repr__(self):
         return f"<List #{self.id}: {self.name}, {self.user_id}>"
@@ -220,19 +223,24 @@ class VideoList(db.Model):
 class VideoListVideos(db.Model):
     """An individual message ("warble")."""
     __tablename__  = 'video_list_videos'
-    id = db.Column(db.Integer,
-                    primary_key=True,
-                    autoincrement=True)    
-    video_list_id = db.Column(db.Integer, 
+    # id = db.Column(db.Integer,
+    #                 primary_key=True,
+    #                 autoincrement=True)    
+    video_list_id = db.Column(db.Integer,
                             db.ForeignKey('video_lists.id'),
-                            nullable=False 
-                            # primary_key=True
+                            primary_key=True,
+                            nullable=False
                             )
-    video_id = db.Column(db.Integer, 
-                        db.ForeignKey('videos.id'),
+    tmdb_id = db.Column(db.Integer,
+                        primary_key=True, 
                         nullable=False 
-                        # primary_key=True
                         )
+    media_type = db.Column(db.Text,
+                        primary_key=True, 
+                        nullable=False 
+                        )
+    
+    # video_list = db.relationship('VideoList')    
 #############################################################################
 
 ############################################################################

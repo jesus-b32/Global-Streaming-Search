@@ -1,9 +1,9 @@
 import os
 import pytest
 # from app import app
-from models import db, User, VideoList, Video, VideoListVideos, Region
+from models import db, User, VideoList, VideoListVideos, Region
 
-# Genre, GenreList, GenreListGenres, StreamingProvider, StreamingList, StreamingListProviders
+# Genre, GenreList, GenreListGenres, StreamingProvider, StreamingList, StreamingListProviders, Video
 
 
 # BEFORE we import our app, let's set an environmental variable
@@ -77,21 +77,21 @@ def new_user():
     return fetched_user
 
 
-@pytest.fixture() 
-def new_video():
-    """
+# @pytest.fixture() 
+# def new_video():
+#     """
     
-    """
-    video = Video(
-        tmdb_id = 2316, 
-        media_type='tv'
-        )
-    with app.app_context():
-        db.session.add(video)
-        db.session.commit()
-        fetched_video = db.session.get(Video, video.id)
+#     """
+#     video = Video(
+#         tmdb_id = 2316, 
+#         media_type='tv'
+#         )
+#     with app.app_context():
+#         db.session.add(video)
+#         db.session.commit()
+#         fetched_video = db.session.get(Video, video.id)
 
-    return fetched_video
+#     return fetched_video
 
 
 @pytest.fixture() 
@@ -123,26 +123,27 @@ def add_video_to_list():
         profile_image=None
         
         )
-    video = Video(
-        tmdb_id = 2316, 
-        media_type='tv'
-        )
+    # video = Video(
+    #     tmdb_id = 2316, 
+    #     media_type='tv'
+    #     )
     video_list = VideoList(
         user_id = 1, 
         name='favorites'
         )
     with app.app_context():
-        db.session.add_all([user, video, video_list])
+        db.session.add_all([user, video_list])
         db.session.commit()    
         video_list_videos = VideoListVideos(
                             video_list_id = video_list.id,
-                            video_id = video.id)
+                            tmdb_id = 2316,
+                            media_type = 'tv')
     
             
     with app.app_context():
         db.session.add(video_list_videos)
         db.session.commit()
-        fetched_video_list = db.session.get(VideoListVideos, video_list_videos.id) 
+        fetched_video_list = db.session.execute(db.select(VideoListVideos).filter_by(video_list_id=1, tmdb_id=2316, media_type='tv')).scalar_one()
     return fetched_video_list
 
 @pytest.fixture() 
