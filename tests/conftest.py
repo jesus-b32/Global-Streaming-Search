@@ -66,7 +66,7 @@ def new_user():
     user = User(
         # email='test@gmail.com', 
         username='test1',
-        password='password',
+        password_hash='password',
         profile_image=None
         )
     with app.app_context():

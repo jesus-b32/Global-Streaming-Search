@@ -20,7 +20,7 @@ class TestModels:
             assert new_user.id == 1
             # assert new_user.email == 'test@gmail.com'
             assert new_user.username == 'test1'
-            assert new_user.password != 'password'
+            assert new_user.password_hash != 'password'
             assert new_user.profile_image == '/static/images/default-pic.jpg'
     
     

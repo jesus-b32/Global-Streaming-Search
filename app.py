@@ -2,9 +2,12 @@ import os
 
 from flask import Flask, render_template, request, flash, redirect, session, g, url_for
 from flask_debugtoolbar import DebugToolbarExtension
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required
+
+import sqlalchemy as sa
 from sqlalchemy.exc import IntegrityError
 
-from forms import UserAddForm, LoginForm, UserEditForm
+from forms import UserAddForm, LoginForm, UserRegisterForm
 from models import db, connect_db, User, Region, VideoList 
 # Genre, GenreList, StreamingProvider, StreamingList, Video
 
@@ -13,6 +16,12 @@ import api
 CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
+
+# Flask-login created and initialized after application instance
+login = LoginManager(app)
+login.login_view = 'login'
+
+
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
 app.config['SQLALCHEMY_DATABASE_URI'] = (
@@ -65,6 +74,12 @@ def do_logout():
         del session[CURR_USER_KEY]
 
 
+
+
+
+
+
+
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
     """Handle user signup.
@@ -74,58 +89,83 @@ def signup():
     If the there already is a user with that username: flash message
     and re-present form.
     """
-
-    form = UserAddForm()
+    if current_user.is_authenticated:
+        return redirect(url_for(homepage))
+    
+    form = UserRegisterForm()
 
     if form.validate_on_submit():
-        try:
-            user = User.signup(
-                username=form.username.data,
-                password=form.password.data,
-                # email=form.email.data,
-                profile_image=form.profile_image.data or User.profile_image.default.arg,
-            )
-            db.session.commit()
+        user = User(username = form.username.data,
+                    profile_image=form.profile_image)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Congratulation, you are now a register user!')
+        
+        return redirect(url_for('login'))
+    
+    return render_template('signup.html', form=form)
+    #     try:
+    #         user = User.signup(
+    #             username=form.username.data,
+    #             password=form.password.data,
+    #             # email=form.email.data,
+    #             profile_image=form.profile_image.data or User.profile_image.default.arg,
+    #         )
+    #         db.session.commit()
 
-        except IntegrityError:
-            flash("Username already taken", 'danger')
-            return render_template('signup.html', form=form)
+    #     except IntegrityError:
+    #         flash("Username already taken", 'danger')
+    #         return render_template('signup.html', form=form)
 
-        do_login(user)
+    #     do_login(user)
 
-        return redirect("/")
+    #     return redirect("/")
 
-    else:
-        return render_template('signup.html', form=form)
+    # else:
+    #     return render_template('signup.html', form=form)
 
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
     """Handle user login."""
+    
+    if current_user.is_authenticated:
+        return redirect(url_for(homepage))
 
     form = LoginForm()
-
     if form.validate_on_submit():
-        user = User.authenticate(form.username.data,
-                                form.password.data)
+        # user = User.authenticate(form.username.data,
+        #                         form.password.data)
+        user = db.session.scalar(sa.select(User).where(User.username == form.username.data))
 
-        if user:
-            do_login(user)
-            flash(f"Hello, {user.username}!", "success")
-            return redirect("/")
-
-        flash("Invalid credentials.", 'danger')
-
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for(login))
+        
+        login_user(user, remember=form.remember_me.data)
+        return redirect(url_for(homepage))
+    
     return render_template('login.html', form=form)
+
+        # if user:
+        #     do_login(user)
+        #     flash(f"Hello, {user.username}!", "success")
+        #     return redirect("/")
+
+        # flash("Invalid credentials.", 'danger')
 
 
 @app.route('/logout')
 def logout():
     """Handle logout of user."""
+    
+    logout_user()
+    return redirect(url_for(homepage))
 
-    do_logout()
-    flash("Successfully Logged Out!", "info")
-    return redirect(url_for('login'))
+    # do_logout()
+    # flash("Successfully Logged Out!", "info")
+    # return redirect(url_for('login'))
 
 
 
