@@ -1,27 +1,25 @@
 """SQLAlchemy models for Warbler."""
 
-# from datetime import datetime
+# from flask_sqlalchemy import SQLAlchemy
+# from typing import Optional
+import sqlalchemy as sa
+import sqlalchemy.orm as so
+from app import db
 
-from flask_sqlalchemy import SQLAlchemy
-# from flask_bcrypt import Bcrypt
 from werkzeug.security import check_password_hash, generate_password_hash
+
 from flask_login import UserMixin
 from app import login
-# from flask_security import Security, SQLAlchemyUserDatastore, auth_required, hash_password
-# from flask_security.models import fsqla_v3 as fsqla
-
-# bcrypt = Bcrypt() not needed can use wekzeug which comes woth flask
-db = SQLAlchemy()
 
 
-def connect_db(app):
-    """Connect this database to provided Flask app.
+# def connect_db(app):
+#     """Connect this database to provided Flask app.
 
-    You should call this in your Flask app.
-    """
+#     You should call this in your Flask app.
+#     """
 
-    db.app = app
-    db.init_app(app)
+#     db.app = app
+#     db.init_app(app)
     
 
 
@@ -58,23 +56,6 @@ class User(UserMixin, db.Model):
         default="/static/images/default-pic.jpg"
     )
 
-    def __init__(self, username, password, profile_image):
-        self.username = username
-        self.password_hash = generate_password_hash(password)
-        # self.password = self.password_hashing(password)
-        self.profile_image = profile_image
-
-    # def __init__(self, email, username, password, image_url):
-    #     self.email = email
-    #     self.username = username
-    #     self.password = self.password_hashing(password)
-    #     self.image_url = image_url
-        
-    # @staticmethod
-    # def password_hashing(password_plaintext):
-    #     return bcrypt.generate_password_hash(password_plaintext).decode('UTF-8')
-        
-
 
     def __repr__(self):
         return f"<User #{self.id}: {self.username}>"
@@ -92,61 +73,7 @@ class User(UserMixin, db.Model):
     @login.user_loader
     def load_user(id):
         return db.session.get(User, int(id))
-    
 
-    # @classmethod
-    # def signup(cls, username, email, password, image_url):
-    #     """Sign up user.
-
-    #     Hashes password and adds user to system.
-    #     """
-
-    #     hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
-
-    #     user = User(
-    #         username=username,
-    #         email=email,
-    #         password=hashed_pwd,
-    #         image_url=image_url,
-    #     )
-
-    #     db.session.add(user)
-    #     return user
-
-    # @classmethod
-    # def authenticate(cls, username, password):
-    #     """Find user with `username` and `password`.
-
-    #     This is a class method (call it on the class, not an individual user.)
-    #     It searches for a user whose password hash matches this password
-    #     and, if it finds such a user, returns that user object.
-
-    #     If can't find matching user (or if password is wrong), returns False.
-    #     """
-
-    #     user = cls.query.filter_by(username=username).first()
-
-    #     if user:
-    #         is_auth = check_password_hash(user.password, password)
-    #         # is_auth = bcrypt.check_password_hash(user.password, password)
-    #         if is_auth:
-    #             return user
-
-    #     return False
-    
-    # @classmethod
-    # def check_password(cls, username, password):
-    #     """Check if entered password by user matches passord stored.
-
-    #     This is a class method (call it on the class, not an individual user.)
-    #     It checks if the password entered by user whose password hash matches this password. Returns true if matches and false if it does not.
-    #     """
-
-    #     user = cls.query.filter_by(username=username).first()
-
-    #     if user:
-    #         return check_password_hash(user.password, password)
-    #         # return bcrypt.check_password_hash(user.password, password)
 
 
 class Region(db.Model):

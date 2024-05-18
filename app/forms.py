@@ -3,13 +3,7 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError
 import sqlalchemy as sa
 from app import db
-from models import User
-
-
-# class MessageForm(FlaskForm):
-#     """Form for adding/editing messages."""
-
-#     text = TextAreaField('text', validators=[DataRequired()])
+from app.models import User
 
 
 class UserRegisterForm(FlaskForm):
@@ -42,6 +36,4 @@ class UserEditForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     # email = StringField('E-mail', validators=[DataRequired(), Email()])
     profile_image = StringField('Image URL (Optional)')
-    # header_image_url = StringField('Header Image URL (Optional)')
-    # bio = StringField('Bio (Optional)')
     password = PasswordField('Password', validators=[Length(min=6)])

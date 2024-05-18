@@ -1,0 +1,1 @@
+FLASK_APP = global_streaming_search.py

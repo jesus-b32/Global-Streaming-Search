@@ -1,7 +1,7 @@
 # import pytest
 # from app import app
 import os
-from models import db, User, VideoList, VideoListVideos, Region
+from app.models import db, User, VideoList, VideoListVideos, Region
 # from models import db, User, VideoList, Video, VideoListVideos
 os.environ['DATABASE_URL'] = "postgresql:///global-streaming-search-test"
 

@@ -4,7 +4,7 @@
         <h1 class="text-center">Global Streaming Search</h1>
 
         <div class="search-container">
-            <form action="/search/movie">
+            <form action="{{url_for('movie_searching')}}">
                 <input class="form-control form-control-lg" name="search" type="text" placeholder="Search Movies or TV Shows" aria-label="search bar" required>
             </form>
             <!-- <div class="suggestions">

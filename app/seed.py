@@ -3,8 +3,8 @@ Seed database with configuration data from TMDB API.
 """
 
 from app import db, app
-from models import Region
-import api
+from app.models import Region
+import app.api as api
 
 with app.app_context():
     db.drop_all()

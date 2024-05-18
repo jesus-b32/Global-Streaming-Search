@@ -6,8 +6,8 @@
         <div class="card mb-3">
             <div class="row g-0">
                 <div class="col-md-4">
-                    {% if  tv_data.poster_path %}
-                        <img src="https://image.tmdb.org/t/p/w342{{tv_data.poster_path}}" class="img-fluid rounded-start" alt="Movie Poster">
+                    {% if  movie_data.poster_path %}
+                        <img src="https://image.tmdb.org/t/p/w342{{movie_data.poster_path}}" class="img-fluid rounded-start" alt="Movie Poster">
                     {% else %}
                         <img src="https://img.icons8.com/ios-filled/100/no-image.png" alt="no-image" class="img-fluid"/>
                     {% endif %}
@@ -15,33 +15,27 @@
                 <div class="col-md-8">
                     <div class="card-body">
                         <h1 class="card-title">
-                            {{tv_data.name}}
+                            {{movie_data.title}}
                         </h1>
                         <p class="card-text">
-                            Number of Seasons: {{tv_data.number_of_seasons}}
+                            Run Time: {{movie_data.runtime}}min
                         </p>
                         <p class="card-text">
-                            Number of Episodes: {{tv_data.number_of_episodes}}
-                        </p>    
-                        <p class="card-text">
-                            Series Status: {{tv_data.status}}
-                        </p>   
-                        <p class="card-text">
                             Genres: 
-                            {% for genre in tv_data.genres %}
+                            {% for genre in movie_data.genres %}
                                 {{genre.name}}-
                             {% endfor %}
                         </p>
                         <p class="card-text">
-                            Original Language: {{tv_data.original_language}}
+                            Original Language: {{movie_data.original_language}}
                         </p>     
                         <p class="card-text">
-                            Series Start Date: {{tv_data.first_air_date}}
+                            Release Date: {{movie_data.release_date}}
                         </p>                                              
                         <h4 class="card-subtitle mb-2">
                             Overview
                         </h4>                        
-                        <p class="card-text">{{tv_data.overview}}</p>
+                        <p class="card-text">{{movie_data.overview}}</p>
                     </div>
                 </div>
             </div>
@@ -53,10 +47,11 @@
     <div class="container-fluid">
         <div class="row">
             <!-- rows containing streaming providers seperated by type(called type) -->
+            <!-- country_name -->
             <div class="col-9">
-                <h2 id="net">{{country_name}}</h2>
+                <h2 id="net">{{country.name}}</h2>
                 <!-- loop over the provider types(ex: rent, buy) for selected country -->
-                {% for type in tv_data['watch/providers'].results[country_selected] %}
+                {% for type in movie_data['watch/providers'].results[country_selected] %}
                     {% if type != 'link'%}
                         <div class="container">
                             {% if type == 'flatrate' %}
@@ -66,7 +61,7 @@
                             {% endif %}
                             <div class="d-flex flex-wrap">
                                 <!-- loop over provider(Netflix, MAX) for the current provider type -->
-                                {% for provider in tv_data['watch/providers'].results[country_selected][type] %}
+                                {% for provider in movie_data['watch/providers'].results[country_selected][type] %}
                                     <div class="me-3 mb-3">
                                         <img src="https://image.tmdb.org/t/p/w92{{provider.logo_path}}" alt="{{provider.provider_name}}" class="img-fluid">
                                     </div>
@@ -76,10 +71,10 @@
                     {% endif %}
                 {% endfor %}
             </div>
-            
+
             <!-- search bar for user to select country they want streaming data for -->
             <div class="col-3">
-                <form action="/tv/{{tv_data.id}}">
+                <form action="{{url_for('movie_detail', movie_id=movie_data.id)}}">
                     <select id="country" name="country" required>
                         {% for country in countries.results %}
                             {% if country.iso_3166_1 == country_selected %}
@@ -112,12 +107,12 @@
             <div class="container">
                 <div class="d-flex flex-wrap">
                     <!-- loop over countries from watch provider result -->
-                    {% for country in tv_data['watch/providers'].results %}
+                    {% for country in movie_data['watch/providers'].results %}
                         <!-- loop over the provider types(ex: rent, buy) for selected country -->
-                        {% for type in tv_data['watch/providers'].results[country] %}
+                        {% for type in movie_data['watch/providers'].results[country] %}
                             {% if type != 'link'%}
                                 <!-- loop over provider(Netflix, MAX) for the current provider type -->
-                                {% for provider in tv_data['watch/providers'].results[country][type] %}
+                                {% for provider in movie_data['watch/providers'].results[country][type] %}
                                     {% if provider.provider_id == provider_selected %}
                                         <!-- flags -->
                                         <div class="me-3 mb-3">
@@ -132,10 +127,10 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- streaming_providers search bar list -->
         <div class="col-3">
-            <form action="/tv/{{tv_data.id}}">
+            <form action="{{url_for('movie_detail', movie_id=movie_data.id)}}">
                 <select id="streamingProvider" name="streamingProvider" required>
                     <!-- loop over list of poviders -->
                     {% for provider in providers.results %}

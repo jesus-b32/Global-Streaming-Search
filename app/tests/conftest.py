@@ -1,7 +1,7 @@
 import os
 import pytest
 # from app import app
-from models import db, User, VideoList, VideoListVideos, Region
+from app.models import db, User, VideoList, VideoListVideos, Region
 
 # Genre, GenreList, GenreListGenres, StreamingProvider, StreamingList, StreamingListProviders, Video
 

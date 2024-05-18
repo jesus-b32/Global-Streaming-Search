@@ -20,7 +20,7 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <h5 class="card-title">
-                                <a href="/movie/{{result.id}}">
+                                <a href="{{url_for('movie_detail', movie_id=result.id)}}">
                                     {{result.title}}
                                 </a>
                             </h5>

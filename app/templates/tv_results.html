@@ -20,7 +20,7 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <h5 class="card-title">
-                                <a href="/tv/{{result.id}}">{{result.name}}</a>
+                                <a href="{{url_for('tv_detail', tv_id=result.id)}}">{{result.name}}</a>
                             </h5>
                             <h6 class="card-subtitle mb-2 text-body-secondary">{{result.first_air_date}}</h6>
                             <p class="card-text">{{result.overview}}</p>

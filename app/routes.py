@@ -1,81 +1,14 @@
-import os
-
-from flask import Flask, render_template, request, flash, redirect, session, g, url_for
-from flask_debugtoolbar import DebugToolbarExtension
-from flask_login import LoginManager, current_user, login_user, logout_user, login_required
-
+from flask import render_template, flash, redirect, url_for, request
+from app import app
+from app.forms import LoginForm, UserRegisterForm
+from flask_login import current_user, login_user, logout_user
 import sqlalchemy as sa
-from sqlalchemy.exc import IntegrityError
+from app import db
+from app.models import User, Region, VideoList, VideoListVideos
+from app.forms import UserRegisterForm, LoginForm
 
-from forms import UserAddForm, LoginForm, UserRegisterForm
-from models import db, connect_db, User, Region, VideoList 
-# Genre, GenreList, StreamingProvider, StreamingList, Video
-
-import api
-
-CURR_USER_KEY = "curr_user"
-
-app = Flask(__name__)
-
-# Flask-login created and initialized after application instance
-login = LoginManager(app)
-login.login_view = 'login'
-
-
-# Get DB_URI from environ variable (useful for production/testing) or,
-# if not set there, use development local db.
-app.config['SQLALCHEMY_DATABASE_URI'] = (
-    os.environ.get('DATABASE_URL', 'postgresql:///global-streaming-search'))
-
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ECHO'] = False
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
-app.config['DEBUG_TB_HOSTS'] = ['dont-show-debug-toolbar']
-toolbar = DebugToolbarExtension(app)
-
-connect_db(app)
-# with app.app_context():
-#     db.drop_all()
-#     db.create_all()
-
-
-
-##############################################################################
-# User signup/login/logout
-
-
-#@app.before_request is a decorator used to register a function that is run before each request.
-# When a request is received, Flask first calls any functions registered with @app.before_request (if any exist), and then proceeds to process the request.
-# This feature is useful for tasks that need to be performed before each request, such as setting up a database connection, checking user authentication, or setting a custom logging object.
-@app.before_request
-def add_user_to_g():
-    """If we're logged in, add curr user to Flask global."""
-
-    # g is a special object in Flask used as a "generic data bucket" to share information across multiple requests.
-    #This makes it a convenient place to store data that needs to be accessible across multiple parts of the application, but not retained between requests.
-    if CURR_USER_KEY in session:
-        g.user = User.query.get(session[CURR_USER_KEY])
-
-    else:
-        g.user = None
-
-
-def do_login(user):
-    """Log in user. Store user ID in session"""
-
-    session[CURR_USER_KEY] = user.id
-
-
-def do_logout():
-    """Logout user. Remove user id from session"""
-
-    if CURR_USER_KEY in session:
-        del session[CURR_USER_KEY]
-
-
-
-
+from urllib.parse import urlsplit
+import app.api as api
 
 
 
@@ -90,7 +23,7 @@ def signup():
     and re-present form.
     """
     if current_user.is_authenticated:
-        return redirect(url_for(homepage))
+        return redirect(url_for('homepage'))
     
     form = UserRegisterForm()
 
@@ -105,25 +38,6 @@ def signup():
         return redirect(url_for('login'))
     
     return render_template('signup.html', form=form)
-    #     try:
-    #         user = User.signup(
-    #             username=form.username.data,
-    #             password=form.password.data,
-    #             # email=form.email.data,
-    #             profile_image=form.profile_image.data or User.profile_image.default.arg,
-    #         )
-    #         db.session.commit()
-
-    #     except IntegrityError:
-    #         flash("Username already taken", 'danger')
-    #         return render_template('signup.html', form=form)
-
-    #     do_login(user)
-
-    #     return redirect("/")
-
-    # else:
-    #     return render_template('signup.html', form=form)
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -131,7 +45,7 @@ def login():
     """Handle user login."""
     
     if current_user.is_authenticated:
-        return redirect(url_for(homepage))
+        return redirect(url_for('homepage'))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -141,19 +55,16 @@ def login():
 
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
-            return redirect(url_for(login))
+            return redirect(url_for('login'))
         
         login_user(user, remember=form.remember_me.data)
-        return redirect(url_for(homepage))
+        next_page = request.args.get('next')
+        if not next_page or urlsplit(next_page).netloc != '':
+            next_page = url_for('homepage')
+        
+        return redirect(url_for('homepage'))
     
     return render_template('login.html', form=form)
-
-        # if user:
-        #     do_login(user)
-        #     flash(f"Hello, {user.username}!", "success")
-        #     return redirect("/")
-
-        # flash("Invalid credentials.", 'danger')
 
 
 @app.route('/logout')
@@ -161,11 +72,7 @@ def logout():
     """Handle logout of user."""
     
     logout_user()
-    return redirect(url_for(homepage))
-
-    # do_logout()
-    # flash("Successfully Logged Out!", "info")
-    # return redirect(url_for('login'))
+    return redirect(url_for('homepage'))
 
 
 
@@ -181,16 +88,16 @@ def homepage():
     - logged in: 100 most recent messages of followed_users
     """
 
-    if g.user:
+    # if current_user:
 
-        #list of users current user is following.
-        #can access message id, username, emai, messages, etc..        
+    #     #list of users current user is following.
+    #     #can access message id, username, emai, messages, etc..        
         
 
-        return render_template('home.html')
+    #     return render_template('home.html')
 
-    else:
-        return render_template('home-anon.html')
+    # else:
+    return render_template('home-anon.html')
     
     
 @app.route('/about')
@@ -210,23 +117,6 @@ def about():
 
 ##############################################################################
 # General user routes:
-
-@app.route('/users')
-def list_users():
-    """Search page with listing of users.
-
-    Can take a 'q' parameter in querystring to search by that username.
-    """
-
-    search = request.args.get('q')
-
-    if not search:
-        users = User.query.all()
-    else:
-        users = User.query.filter(User.username.like(f"%{search}%")).all()
-
-    return render_template('users/index.html', users=users)
-
 
 # @app.route('/users/<int:user_id>')
 # def users_show(user_id):
