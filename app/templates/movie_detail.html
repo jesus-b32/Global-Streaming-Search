@@ -108,17 +108,20 @@
                 <div class="d-flex flex-wrap">
                     <!-- loop over countries from watch provider result -->
                     {% for country in movie_data['watch/providers'].results %}
+                        <!-- use namespace object to track when selected provider is found for current country in loop. This is to prevent duplicate flags from being displayed like with Crunchyroll -->
+                        {% set ns = namespace(found=false) %}                    
                         <!-- loop over the provider types(ex: rent, buy) for selected country -->
                         {% for type in movie_data['watch/providers'].results[country] %}
                             {% if type != 'link'%}
                                 <!-- loop over provider(Netflix, MAX) for the current provider type -->
                                 {% for provider in movie_data['watch/providers'].results[country][type] %}
-                                    {% if provider.provider_id == provider_selected %}
+                                    {% if provider.provider_id == provider_selected and not ns.found %}
                                         <!-- flags -->
                                         <div class="me-3 mb-3">
                                             <p>{{country}}</p>
                                             <img src="/static/images/flags/{{country.lower()}}.svg" alt="{{country}}" class="img-fluid flag">
                                         </div>
+                                        {% set ns.found = true %}
                                     {% endif %}
                                 {% endfor %}
                             {% endif %}

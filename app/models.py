@@ -1,6 +1,5 @@
 """SQLAlchemy models for Warbler."""
 
-# from flask_sqlalchemy import SQLAlchemy
 # from typing import Optional
 import sqlalchemy as sa
 import sqlalchemy.orm as so
@@ -165,7 +164,6 @@ class VideoList(db.Model):
         return f"<List #{self.id}: {self.name}, {self.user_id}>"
 
 
-#association table
 class VideoListVideos(db.Model):
     """An individual message ("warble")."""
     __tablename__  = 'video_list_videos'

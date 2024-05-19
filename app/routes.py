@@ -1,9 +1,9 @@
 from flask import render_template, flash, redirect, url_for, request
-from app import app
-from app.forms import LoginForm, UserRegisterForm
+from app import app, db
+# from app.forms import LoginForm, UserRegisterForm
 from flask_login import current_user, login_user, logout_user
 import sqlalchemy as sa
-from app import db
+# from app import db
 from app.models import User, Region, VideoList, VideoListVideos
 from app.forms import UserRegisterForm, LoginForm
 
@@ -49,8 +49,6 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
-        # user = User.authenticate(form.username.data,
-        #                         form.password.data)
         user = db.session.scalar(sa.select(User).where(User.username == form.username.data))
 
         if user is None or not user.check_password(form.password.data):
@@ -78,8 +76,6 @@ def logout():
 
 ##############################################################################
 # Homepage and error pages
-
-
 @app.route('/')
 def homepage():
     """Show homepage:
@@ -158,11 +154,6 @@ def get_provider_name(id, provider_data):
         if provider['provider_id'] == id:
             return provider['provider_name']
         
-
-def get_country_name(id, country_data):
-    for country in country_data['results']:
-        if country['iso_3166_1'] == id:
-            return country['native_name']
     
 
     
@@ -186,7 +177,6 @@ def movie_detail(movie_id):
     
     #gets the name of the country user selected
     country = db.get_or_404(Region, country_selected)
-    # all_countries = db.
     
     #list of streamingn providers for movies
     providers = api.movie_provider_list()
@@ -220,9 +210,8 @@ def tv_searching():
     return render_template('tv_results.html',
                             search=search,
                             tv_data=tv_data)
-    
-    
-    
+
+
 @app.route('/tv/<int:tv_id>')
 def tv_detail(tv_id):
     """TV detail page that lists important tv show details. ALso displays streaming availability by country or by streaming provider, based on what user selects.
@@ -242,9 +231,9 @@ def tv_detail(tv_id):
     countries = api.country_list()
     
     #gets the name of the country user selected
-    country_name = get_country_name(country_selected, countries)
+    country = db.get_or_404(Region, country_selected)
     
-    #list of streamingn providers for movies
+    #list of streamingn providers for tv shows
     providers = api.tv_provider_list()
     
     #gets the name of the provider user selected
@@ -260,4 +249,4 @@ def tv_detail(tv_id):
                             country_selected=country_selected,
                             provider_selected=provider_selected,
                             provider_name=provider_name,
-                            country_name=country_name)
+                            country_name=country.name)

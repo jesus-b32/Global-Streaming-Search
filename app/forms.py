@@ -12,7 +12,7 @@ class UserRegisterForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     # email = StringField('E-mail', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
-    password2 = PasswordField('Repeate Password', validators=[DataRequired(), EqualTo('password')])
+    password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
     profile_image = StringField('Image URL (Optional)')
     # submit = SubmitField('Sign In')
     

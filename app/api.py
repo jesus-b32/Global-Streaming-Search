@@ -128,3 +128,10 @@ def all_countries():
 
     response = requests.get(url, headers=headers)
     return response.json()
+
+
+
+# def get_country_name(id, country_data):
+#     for country in country_data['results']:
+#         if country['iso_3166_1'] == id:
+#             return country['native_name']
