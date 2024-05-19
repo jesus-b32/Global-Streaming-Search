@@ -3,7 +3,7 @@
 
 <!-- This div section contains all import movie details -->
 <div class="container-fluid">
-    <div class="card mb-3">
+    <div class="card my-5">
         <div class="row g-0">
             <div class="col-md-4">
                 {% if  tv_data.poster_path %}
@@ -54,7 +54,7 @@
     <div class="row mb-5">
         <!-- rows containing streaming providers seperated by type(called type) -->
         <div class="col-9">
-            <h2 id="net">{{country_name}}</h2>
+            <h2 id="net">{{get_country_name(country_selected)}}</h2>
             <!-- loop over the provider types(ex: rent, buy) for selected country -->
             {% for type in tv_data['watch/providers'].results[country_selected] %}
                 {% if type != 'link'%}
@@ -130,7 +130,7 @@
                                         <div class="card h-100">
                                             <img src="/static/images/flags/{{country.lower()}}.svg" alt="{{country}}" class="card-img-top">
                                             <div class="card-body">
-                                                <h5 class="card-title">{{country}}</h5>
+                                                <h5 class="card-title">{{get_country_name(country)}}</h5>
                                             </div>
                                         </div>
                                     </div>

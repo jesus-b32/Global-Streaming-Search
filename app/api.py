@@ -130,8 +130,8 @@ def all_countries():
     return response.json()
 
 
-
-# def get_country_name(id, country_data):
-#     for country in country_data['results']:
-#         if country['iso_3166_1'] == id:
-#             return country['native_name']
+#Helper functions for API##############################################
+def get_provider_name(id, provider_data):
+    for provider in provider_data['results']:
+        if provider['provider_id'] == id:
+            return provider['provider_name']

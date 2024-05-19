@@ -1,14 +1,29 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
-# from app.forms import LoginForm, UserRegisterForm
 from flask_login import current_user, login_user, logout_user
 import sqlalchemy as sa
-# from app import db
 from app.models import User, Region, VideoList, VideoListVideos
 from app.forms import UserRegisterForm, LoginForm
 
 from urllib.parse import urlsplit
 import app.api as api
+
+
+@app.template_global('get_country_name')        
+def get_country_name(id):
+    """Take country ID and retrieve the country name in Region table from database. The @app.template_global decerator creates a global function that can be used in any jinja template.
+
+    Args:
+        id (string): id of country in Region table in database
+
+    Returns:
+        string: The country name associated with the country id enter
+    """
+    country = db.session.get(Region, id)
+    # if country not found in database, return country ID
+    if not country:
+        return id
+    return country.name     
 
 
 
@@ -55,12 +70,15 @@ def login():
             flash('Invalid username or password')
             return redirect(url_for('login'))
         
+        # login user. Handle the case where user attempted to access a login restricted page. After user successfully logs in, user should be redirected to the page user wanted to access.
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
+        
+        # if login URL has not next argument or URL is set to a full URL that includes a domain name, then redirect to homepage
         if not next_page or urlsplit(next_page).netloc != '':
             next_page = url_for('homepage')
-        
-        return redirect(url_for('homepage'))
+
+        return redirect(url_for(next_page))
     
     return render_template('login.html', form=form)
 
@@ -84,24 +102,13 @@ def homepage():
     - logged in: 100 most recent messages of followed_users
     """
 
-    # if current_user:
-
-    #     #list of users current user is following.
-    #     #can access message id, username, emai, messages, etc..        
-        
-
-    #     return render_template('home.html')
-
-    # else:
     return render_template('home-anon.html')
     
     
 @app.route('/about')
 def about():
-    """Show about section:
+    """Show about section.
 
-    - anon users: no messages
-    - logged in: 100 most recent messages of followed_users
     """
 
     return render_template('about.html')
@@ -136,9 +143,8 @@ def about():
 
 @app.route('/search/movie')
 def movie_searching():
-    """Search page with listing of movies, TV shows, and people.
+    """Search result page with listing of movies that query search term
 
-    Can take a 'q' parameter in querystring to search by that username.
     """
 
     search = request.args.get('search')
@@ -148,25 +154,18 @@ def movie_searching():
                             search=search,
                             movie_data=movie_data)
 
-
-def get_provider_name(id, provider_data):
-    for provider in provider_data['results']:
-        if provider['provider_id'] == id:
-            return provider['provider_name']
-        
-    
-
     
 @app.route('/movie/<int:movie_id>')
 def movie_detail(movie_id):
     """Movie detail page that lists important movie details. ALso displays streaming availability by country or by streaming provider, based on what user selects.
-    Can take a 'country' parameter in querystring to search by that username.
+    Can take a 'country' or provider parameter in querystring to search for streaming availabliltiy by that term.
     """
     #user selected country for sreaming info
     country_selected = request.args.get('country')
     if not country_selected: #default to US if no country picked
         country_selected = 'US'
     
+    #user selected provider for sreaming info
     provider_selected = request.args.get('streamingProvider', type=int)
     #default to netflix if no provider picked
     if not provider_selected:
@@ -175,14 +174,11 @@ def movie_detail(movie_id):
     #list of countries with streaming data
     countries = api.country_list()
     
-    #gets the name of the country user selected
-    country = db.get_or_404(Region, country_selected)
-    
     #list of streamingn providers for movies
     providers = api.movie_provider_list()
     
     #gets the name of the provider user selected
-    provider_name = get_provider_name(provider_selected, providers)
+    provider_name = api.get_provider_name(provider_selected, providers)
     
     # movie detail including streaming provider info
     movie_data = api.movie_details(movie_id)
@@ -193,15 +189,13 @@ def movie_detail(movie_id):
                             countries=countries,
                             country_selected=country_selected,
                             provider_selected=provider_selected,
-                            provider_name=provider_name,
-                            country=country)
+                            provider_name=provider_name)
 
     
 @app.route('/search/tv')
 def tv_searching():
-    """Search page with listing of movies, TV shows, and people.
+    """Search result page with listing of movies that query search term
 
-    Can take a 'q' parameter in querystring to search by that username.
     """
 
     search = request.args.get('search')
@@ -215,13 +209,14 @@ def tv_searching():
 @app.route('/tv/<int:tv_id>')
 def tv_detail(tv_id):
     """TV detail page that lists important tv show details. ALso displays streaming availability by country or by streaming provider, based on what user selects.
-    Can take a 'country' parameter in querystring to search by that username.
+    Can take a 'country' or provider parameter in querystring to search for streaming availabliltiy by that term.
     """
     #user selected country for sreaming info
     country_selected = request.args.get('country')
     if not country_selected: #default to US if no country picked
         country_selected = 'US'
     
+    #user selected provider for sreaming info
     provider_selected = request.args.get('streamingProvider', type=int)
     #default to netflix if no provider picked
     if not provider_selected:
@@ -230,14 +225,11 @@ def tv_detail(tv_id):
     #list of countries with streaming data
     countries = api.country_list()
     
-    #gets the name of the country user selected
-    country = db.get_or_404(Region, country_selected)
-    
     #list of streamingn providers for tv shows
     providers = api.tv_provider_list()
     
     #gets the name of the provider user selected
-    provider_name = get_provider_name(provider_selected, providers)
+    provider_name = api.get_provider_name(provider_selected, providers)
     
     # tv show detail including streaming provider info
     tv_data = api.tv_details(tv_id)
@@ -248,5 +240,4 @@ def tv_detail(tv_id):
                             countries=countries,
                             country_selected=country_selected,
                             provider_selected=provider_selected,
-                            provider_name=provider_name,
-                            country_name=country.name)
+                            provider_name=provider_name)
