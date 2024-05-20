@@ -138,6 +138,21 @@ def about():
 #     return render_template('users/show.html', user=user, messages=messages)
 
 
+@app.route('/search')
+def search():
+    """Redirect to movie or tv show result page based on user selection
+
+    """
+
+    search = request.args.get('search')
+    media_type = request.args.get('media_type')
+        
+    if media_type == 'movie':
+        return redirect(url_for('movie_searching', search=search))
+    
+    return redirect(url_for('tv_searching', search=search))
+
+
 ##############################################################################
 # Movie routes:
 
