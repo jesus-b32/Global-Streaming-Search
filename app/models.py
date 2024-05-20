@@ -75,10 +75,10 @@ class User(UserMixin, db.Model):
 
 
 
-class Region(db.Model):
+class Country(db.Model):
     """An individual message ("warble")."""
 
-    __tablename__ = 'regions'
+    __tablename__ = 'countries'
 
     id = db.Column(
         db.Text,
@@ -92,7 +92,7 @@ class Region(db.Model):
     )
 
     def __repr__(self):
-        return f"<Region #{self.id}: {self.name}>"
+        return f"<Country #{self.id}: {self.name}>"
 
 #############################################################################
 #VIDEOS

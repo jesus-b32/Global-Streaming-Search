@@ -1,8 +1,8 @@
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from app import app, db
-from app.models import User, Region, VideoList, VideoListVideos
+from app.models import User, Country, VideoList, VideoListVideos
 
 @app.shell_context_processor
 def make_shell_context():
-    return {'sa':sa, 'so':so, 'db':db, 'User':User, 'Region':Region, 'VideoList':VideoList, 'VideoListVideos':VideoListVideos}
+    return {'sa':sa, 'so':so, 'db':db, 'User':User, 'Country':Country, 'VideoList':VideoList, 'VideoListVideos':VideoListVideos}

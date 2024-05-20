@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from app import app, db
 from flask_login import current_user, login_user, logout_user
 import sqlalchemy as sa
-from app.models import User, Region, VideoList, VideoListVideos
+from app.models import User, Country, VideoList, VideoListVideos
 from app.forms import UserRegisterForm, LoginForm
 
 from urllib.parse import urlsplit
@@ -19,7 +19,8 @@ def get_country_name(id):
     Returns:
         string: The country name associated with the country id enter
     """
-    country = db.session.get(Region, id)
+    
+    country = db.session.get(Country, id)
     # if country not found in database, return country ID
     if not country:
         return id
