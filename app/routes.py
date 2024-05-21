@@ -45,7 +45,7 @@ def signup():
 
     if form.validate_on_submit():
         user = User(username = form.username.data,
-                    profile_image=form.profile_image)
+                    profile_image=form.profile_image.data or User.profile_image.default.arg)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -79,7 +79,7 @@ def login():
         if not next_page or urlsplit(next_page).netloc != '':
             next_page = url_for('homepage')
 
-        return redirect(url_for(next_page))
+        return redirect(next_page)
     
     return render_template('login.html', form=form)
 

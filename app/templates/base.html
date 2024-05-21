@@ -34,16 +34,20 @@
                 <li class="nav-item"><a class="nav-link" href="#">My WatchList</a></li>                    
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Profile
+                        {% if current_user.is_authenticated %}
+                            <b>{{current_user.username}}</b>
+                        {% else %}
+                            Profile
+                        {% endif %}
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Username</a></li>
+                        <!-- <li class="dropdown-item">{{current_user.username}}</li> -->
                         <li><a class="dropdown-item" href="#">Edit Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="#">Watchlist</a></li>
                         <li><a class="dropdown-item" href="#">Favorites</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Logout</a></li>                    
+                        <li><a class="dropdown-item" href="{{url_for('logout')}}">Logout</a></li>                    
                     </ul>
                 </li>
                 {% endif %} 
@@ -82,8 +86,7 @@
                     Global Streaming Search
                 </h6>
                 <p>
-                Here you can use rows and columns to organize your footer content. Lorem ipsum
-                dolor sit amet, consectetur adipisicing elit.
+                    Global Streaming Search will help you find what streaming services have your favorite movies and TV shows with a simple search.
                 </p>
             </div>
             <!-- Grid column -->
