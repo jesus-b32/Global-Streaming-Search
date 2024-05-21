@@ -49,6 +49,15 @@ def signup():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
+        
+        #giver new user a watchlist and favorites list
+        watchlist = VideoList(user_id = user.id,
+                            name = 'watchlist')
+        favorites = VideoList(user_id = user.id,
+                            name = 'favorites')
+        db.session.add_all([watchlist, favorites])
+        db.session.commit()
+                
         flash('Congratulation, you are now a register user!')
         
         return redirect(url_for('login'))
@@ -206,7 +215,10 @@ def movie_detail(movie_id):
                             country_selected=country_selected,
                             provider_selected=provider_selected,
                             provider_name=provider_name)
+#############################################################################
 
+############################################################################
+#TV routes
     
 @app.route('/search/tv')
 def tv_searching():
@@ -257,3 +269,20 @@ def tv_detail(tv_id):
                             country_selected=country_selected,
                             provider_selected=provider_selected,
                             provider_name=provider_name)
+#############################################################################
+
+#############################################################################
+# video lists routes    
+    
+@app.route('/user/<int:user_id>/<video_list>/<media_type>')
+def watchlist(user_id, video_list_id, media_type):
+    """Search result page with listing of movies that query search term
+
+    """
+    # user = db.session.get(User, user_id)
+    # video_list = db.session.get(VideoList, user_id)
+    
+    # for video in video_list.videos:
+        
+        
+    # return render_template('movie_results.html')    
