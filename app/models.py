@@ -11,16 +11,6 @@ from flask_login import UserMixin
 from app import login
 
 
-# def connect_db(app):
-#     """Connect this database to provided Flask app.
-
-#     You should call this in your Flask app.
-#     """
-
-#     db.app = app
-#     db.init_app(app)
-    
-
 
 class User(UserMixin, db.Model):
     """User in the system."""
@@ -30,7 +20,7 @@ class User(UserMixin, db.Model):
     id = db.Column(
         db.Integer,
         primary_key=True,
-        autoincrement=True,
+        autoincrement=True
     )
 
     # email = db.Column(
@@ -42,12 +32,12 @@ class User(UserMixin, db.Model):
     username = db.Column(
         db.Text,
         nullable=False,
-        unique=True,
+        unique=True
     )
     
     password_hash = db.Column(
         db.Text,
-        nullable=False,
+        nullable=False
     )    
 
     profile_image = db.Column(
@@ -59,7 +49,7 @@ class User(UserMixin, db.Model):
 
 
     def __repr__(self):
-        return f"<User #{self.id}, Username: {self.username}>"
+        return f"<User ID: {self.id}, Username: {self.username}>"
     
     # hash the provided password
     def set_password(self, password):
@@ -85,12 +75,12 @@ class Country(db.Model):
     id = db.Column(
         db.Text,
         primary_key=True,
-        nullable=False,
+        nullable=False
     )
 
     name = db.Column(
         db.Text,
-        nullable=False,
+        nullable=False
     )
 
     def __repr__(self):
@@ -99,37 +89,43 @@ class Country(db.Model):
 #############################################################################
 #VIDEOS
 
-# class Video(db.Model):
-#     """An individual message ("warble")."""
+#join table
+video_list_videos = db.Table(
+    'video_list_videos',
+    db.Column('video_id', db.Integer, db.ForeignKey('videos.id')),
+    db.Column('video_list_id', db.Integer, db.ForeignKey('video_lists.id'))
+)
 
-#     __tablename__ = 'videos'
+
+class Video(db.Model):
+    """An individual message ("warble")."""
+
+    __tablename__ = 'videos'
     
-#     id = db.Column(
-#         db.Integer,
-#         primary_key=True,
-#         nullable=False,
-#     )    
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )    
 
-#     tmdb_id = db.Column(
-#         db.Integer,
-#         nullable=False,
-#     )    
+    tmdb_id = db.Column(
+        db.Integer,
+        nullable=False
+    )    
 
-#     media_type = db.Column(
-#         db.Text,
-#         nullable=False,
-#     )
+    media_type = db.Column(
+        db.Text,
+        nullable=False
+    )
     
-#     video_lists = db.relationship(
-#         'VideoList', 
-#         secondary = 'video_list_videos',
-#         back_populates = 'videos'
-#     )
+    video_lists = db.relationship(
+        'VideoList', 
+        secondary = 'video_list_videos',
+        back_populates = 'videos'
+    )
 
-
-
-#     def __repr__(self):
-#         return f"<Video #{self.id}: {self.media_type} and {self.tmdb_id}>"
+    def __repr__(self):
+        return f"<Video ID: {self.id}, Media Type: {self.media_type}, TMDB ID: {self.tmdb_id}>"
     
 class VideoList(db.Model):
     """An individual message ("warble")."""
@@ -145,47 +141,50 @@ class VideoList(db.Model):
     user_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='CASCADE'),
-        nullable=False,
+        nullable=False
     )
 
     name = db.Column(
         db.Text,
-        nullable=False,
+        nullable=False
     )
     
     owner = db.relationship('User', back_populates = 'video_lists')
     
-    videos = db.relationship('VideoListVideos')
+    # videos = db.relationship('VideoListVideos')
     
-    # videos = db.relationship(
-    #     'Video',
-    #     secondary = 'video_list_videos',
-    #     back_populates = 'video_lists'
-    # )
+    videos = db.relationship(
+        'Video',
+        secondary = 'video_list_videos',
+        back_populates = 'video_lists'
+    )
 
     def __repr__(self):
-        return f"<Video List ID: {self.id}, name: {self.name}, OwnerID: {self.user_id}>"
+        return f"<Video List ID: {self.id}, Name: {self.name}, OwnerID: {self.user_id}>"
 
 
-class VideoListVideos(db.Model):
-    """An individual message ("warble")."""
-    __tablename__  = 'video_list_videos'
-    # id = db.Column(db.Integer,
-    #                 primary_key=True,
-    #                 autoincrement=True)    
-    video_list_id = db.Column(db.Integer,
-                            db.ForeignKey('video_lists.id'),
-                            primary_key=True,
-                            nullable=False
-                            )
-    tmdb_id = db.Column(db.Integer,
-                        primary_key=True, 
-                        nullable=False 
-                        )
-    media_type = db.Column(db.Text,
-                        primary_key=True, 
-                        nullable=False 
-                        )
+
+
+
+# class VideoListVideos(db.Model):
+#     """An individual message ("warble")."""
+#     __tablename__  = 'video_list_videos'
+#     id = db.Column(db.Integer,
+#                     primary_key=True,
+#                     autoincrement=True)    
+#     video_list_id = db.Column(db.Integer,
+#                             db.ForeignKey('video_lists.id'),
+#                             primary_key=True,
+#                             nullable=False
+#                             )
+#     tmdb_id = db.Column(db.Integer,
+#                         primary_key=True, 
+#                         nullable=False 
+#                         )
+#     media_type = db.Column(db.Text,
+#                         primary_key=True, 
+#                         nullable=False 
+#                         )
     
     # video_list = db.relationship('VideoList')    
 #############################################################################
