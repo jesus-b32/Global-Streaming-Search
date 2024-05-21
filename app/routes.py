@@ -27,6 +27,24 @@ def get_country_name(id):
     return country.name     
 
 
+# @app.template_global('video_detail')        
+# def get_country_name(tmdb_id, media_type):
+#     """Take country ID and retrieve the country name in Region table from database. The @app.template_global decerator creates a global function that can be used in any jinja template.
+
+#     Args:
+#         id (string): id of country in Region table in database
+
+#     Returns:
+#         string: The country name associated with the country id enter
+#     """
+    
+#     country = db.session.get(Country, id)
+#     # if country not found in database, return country ID
+#     if not country:
+#         return id
+#     return country.name    
+
+
 
 
 @app.route('/signup', methods=["GET", "POST"])
@@ -274,15 +292,15 @@ def tv_detail(tv_id):
 #############################################################################
 # video lists routes    
     
-@app.route('/user/<int:user_id>/<video_list>/<media_type>')
-def watchlist(user_id, video_list_id, media_type):
+@app.route('/user/<int:user_id>/watchlist')
+def watchlist(user_id):
     """Search result page with listing of movies that query search term
 
     """
     # user = db.session.get(User, user_id)
-    # video_list = db.session.get(VideoList, user_id)
+    watchlist = db.session.scalar(sa.select(VideoList).where(VideoList.user_id == user_id, VideoList.name == 'watchlist'))
     
     # for video in video_list.videos:
         
         
-    # return render_template('movie_results.html')    
+    return render_template('watchlist.html', watchlist)    

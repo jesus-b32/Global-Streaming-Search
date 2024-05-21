@@ -54,10 +54,12 @@ class User(UserMixin, db.Model):
         db.Text,
         default="/static/images/default-pic.jpg"
     )
+    
+    video_lists = db.relationship('VideoList', back_populates = 'owner')
 
 
     def __repr__(self):
-        return f"<User #{self.id}: {self.username}>"
+        return f"<User #{self.id}, Username: {self.username}>"
     
     # hash the provided password
     def set_password(self, password):
@@ -92,7 +94,7 @@ class Country(db.Model):
     )
 
     def __repr__(self):
-        return f"<Country #{self.id}: {self.name}>"
+        return f"<Country ID: {self.id}, Name:{self.name}>"
 
 #############################################################################
 #VIDEOS
@@ -137,8 +139,7 @@ class VideoList(db.Model):
     id = db.Column(
         db.Integer,
         primary_key=True,
-        autoincrement=True,
-        unique=True
+        autoincrement=True
     )
 
     user_id = db.Column(
@@ -152,6 +153,8 @@ class VideoList(db.Model):
         nullable=False,
     )
     
+    owner = db.relationship('User', back_populates = 'video_lists')
+    
     videos = db.relationship('VideoListVideos')
     
     # videos = db.relationship(
@@ -161,7 +164,7 @@ class VideoList(db.Model):
     # )
 
     def __repr__(self):
-        return f"<List #{self.id}: {self.name}, {self.user_id}>"
+        return f"<Video List ID: {self.id}, name: {self.name}, OwnerID: {self.user_id}>"
 
 
 class VideoListVideos(db.Model):
