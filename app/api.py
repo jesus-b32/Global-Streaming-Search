@@ -135,3 +135,10 @@ def get_provider_name(id, provider_data):
     for provider in provider_data['results']:
         if provider['provider_id'] == id:
             return provider['provider_name']
+        
+        
+def get_video_detail(tmdb_id, media_type):
+    if media_type == 'movie':
+        return movie_details(tmdb_id)
+    return tv_details(tmdb_id)
+            

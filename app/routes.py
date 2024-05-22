@@ -28,7 +28,7 @@ def get_country_name(id):
 
 
 # @app.template_global('video_detail')        
-# def get_country_name(tmdb_id, media_type):
+# def get_video_detail(tmdb_id, media_type):
 #     """Take country ID and retrieve the country name in Region table from database. The @app.template_global decerator creates a global function that can be used in any jinja template.
 
 #     Args:
@@ -38,11 +38,9 @@ def get_country_name(id):
 #         string: The country name associated with the country id enter
 #     """
     
-#     country = db.session.get(Country, id)
-#     # if country not found in database, return country ID
-#     if not country:
-#         return id
-#     return country.name    
+#     if media_type == 'movie':
+#         api.movie_details(tmdb_id)
+        
 
 
 
@@ -300,7 +298,40 @@ def watchlist(user_id):
     # user = db.session.get(User, user_id)
     watchlist = db.session.scalar(sa.select(VideoList).where(VideoList.user_id == user_id, VideoList.name == 'watchlist'))
     
-    # for video in video_list.videos:
+    # video_list = [api.get_video_detail(video.tmdb, video.media_type) for video in watchlist.videos]
+    
+    video_list = []
+    
+    for video in watchlist.videos:
+        video_detail = api.get_video_detail(video.tmdb_id, video.media_type)
+        # video_list.append((video, video_detail))
+        video_list.append({'video': video, 'video_detail': video_detail})
         
         
-    return render_template('watchlist.html', watchlist)    
+        
+    return render_template('watchlist.html', video_list=video_list)   
+
+
+
+@app.route('/add/watchlist/<media_type>/<int:tmdb_id>', methods=['POST'])
+# @login_required
+def add_to_watchlist(media_type, tmdb_id):
+    """Search result page with listing of movies that query search term
+
+    """
+    # video = db.session.get(Video, )
+    watchlist = db.session.scalar(sa.select(VideoList).where(VideoList.user_id == current_user.id, VideoList.name == 'watchlist'))
+    video = db.session.scalar(sa.select(Video).where(Video.tmdb_id == tmdb_id, Video.media_type == media_type))
+    
+    if video is None:
+        video = Video(tmdb_id=tmdb_id, media_type=media_type)
+        db.session.add(video)
+        watchlist.videos.append(video)
+        db.session.commit() 
+    else:
+        watchlist.videos.append(video)
+        db.session.commit()       
+        
+    if media_type == 'movie':
+            return redirect(url_for('movie_detail', movie_id=tmdb_id))
+    return redirect(url_for('tv_detail', tv_id=tmdb_id))

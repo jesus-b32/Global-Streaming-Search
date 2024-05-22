@@ -7,12 +7,16 @@
                 <a href="/search/tv?search={{search}}">TV</a>
             </div>
         </div> -->
-        {% for video in watchlist.videos %}
+        {% if not video_list %}
+            <h2 class="text-center">No videos in your watchlist</h2>
+        {% else %}
+
+        {% for video in video_list %}
             <div class="card mb-3">
                 <div class="row g-0">
                     <div class="col-md-4">
-                        {% if  result.poster_path %}
-                            <img src="https://image.tmdb.org/t/p/w185{{result.poster_path}}" class="img-fluid rounded-start" alt="Movie Poster">
+                        {% if  video.video_detail.poster_path %}
+                            <img src="https://image.tmdb.org/t/p/w185{{video.video_detail.poster_path}}" class="img-fluid rounded-start" alt="Poster">
                         {% else %}
                             <img src="https://img.icons8.com/ios-filled/100/no-image.png" alt="no-image"/>
                         {% endif %}
@@ -20,18 +24,25 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <h5 class="card-title">
-                                <a href="{{url_for('movie_detail', movie_id=result.id)}}">
-                                    {{result.title}}
-                                </a>
+                                {% if video.video.media_type == 'movie'  %}
+                                    <a href="{{url_for('movie_detail', movie_id=video.video_detail.id)}}">
+                                        {{video.video_detail.title}}
+                                    </a>
+                                {% else %}
+                                    <a href="{{url_for('tv_detail', tv_id=video.video_detail.id)}}">
+                                        {{video.video_detail.name}}
+                                    </a>
+                                {% endif %}
                             </h5>
                             <h6 class="card-subtitle mb-2 text-body-secondary">
-                                {{result.release_date}}
+                                {{video.video_detail.release_date}}
                             </h6>
-                            <p class="card-text">{{result.overview}}</p>
+                            <p class="card-text">{{video.video_detail.overview}}</p>
                         </div>
                     </div>
                 </div>
             </div>
         {% endfor %}
+        {% endif %}
     </div>
 {% endblock %}

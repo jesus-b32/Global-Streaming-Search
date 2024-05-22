@@ -34,8 +34,20 @@
                     </p>                                              
                     <h4 class="card-subtitle mb-2">
                         Overview
-                    </h4>                        
+                    </h4>                  
                     <p class="card-text">{{movie_data.overview}}</p>
+                    <form action="/add/watchlist/movie/{{movie_data.id}}" method="POST">
+                        <button class="btn btn-primary btn-sm">
+                            <i class="fa-regular fa-bookmark"></i> Add to WatchList
+                        </button>
+                    </form>
+
+                    <form action="#" method="POST">
+                        <button class="btn btn-danger btn-sm">
+                            <i class="fa-solid fa-bookmark"></i> Remove from WatchList
+                        </button>
+                    </form>
+                    <!-- <a href="#" class="btn btn-primary"><i class="fa-regular fa-bookmark"></i> Add to WatchList</a> -->
                 </div>
             </div>
         </div>
