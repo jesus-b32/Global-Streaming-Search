@@ -37,7 +37,7 @@ def add_users():
 
 ##### Adding videos ######################
 
-def add_video_lists():
+def add_videos():
     video1 = Video(tmdb_id=2316, media_type = 'tv')
     
     video2 = Video(tmdb_id=272, media_type = 'movie')
