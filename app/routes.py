@@ -319,7 +319,6 @@ def add_to_watchlist(media_type, tmdb_id):
     """Search result page with listing of movies that query search term
 
     """
-    # video = db.session.get(Video, )
     watchlist = db.session.scalar(sa.select(VideoList).where(VideoList.user_id == current_user.id, VideoList.name == 'watchlist'))
     video = db.session.scalar(sa.select(Video).where(Video.tmdb_id == tmdb_id, Video.media_type == media_type))
     
@@ -331,6 +330,23 @@ def add_to_watchlist(media_type, tmdb_id):
     else:
         watchlist.videos.append(video)
         db.session.commit()       
+        
+    if media_type == 'movie':
+            return redirect(url_for('movie_detail', movie_id=tmdb_id))
+    return redirect(url_for('tv_detail', tv_id=tmdb_id))
+
+
+@app.route('/remove/watchlist/<media_type>/<int:tmdb_id>', methods=['POST'])
+# @login_required
+def remove_from_watchlist(media_type, tmdb_id):
+    """Search result page with listing of movies that query search term
+
+    """
+    watchlist = db.session.scalar(sa.select(VideoList).where(VideoList.user_id == current_user.id, VideoList.name == 'watchlist'))
+    video = db.session.scalar(sa.select(Video).where(Video.tmdb_id == tmdb_id, Video.media_type == media_type))
+    
+    watchlist.videos.remove(video)
+    db.session.commit()    
         
     if media_type == 'movie':
             return redirect(url_for('movie_detail', movie_id=tmdb_id))

@@ -161,6 +161,10 @@ class VideoList(db.Model):
 
     def __repr__(self):
         return f"<Video List ID: {self.id}, Name: {self.name}, OwnerID: {self.user_id}>"
+    
+    def video_is_in(self, video):
+        query = self.videos.select().where(Video.id == video.id)
+        return db.session.scalar(query) is not None
 
 
 

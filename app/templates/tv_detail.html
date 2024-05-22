@@ -42,6 +42,17 @@
                         Overview
                     </h4>                        
                     <p class="card-text">{{tv_data.overview}}</p>
+                    <form action="/add/watchlist/tv/{{tv_data.id}}" method="POST">
+                        <button class="btn btn-primary btn-sm">
+                            <i class="fa-regular fa-bookmark"></i> Add to WatchList
+                        </button>
+                    </form>
+
+                    <form action="#" method="POST">
+                        <button class="btn btn-danger btn-sm">
+                            <i class="fa-solid fa-bookmark"></i> Remove from WatchList
+                        </button>
+                    </form>                    
                 </div>
             </div>
         </div>
