@@ -295,18 +295,16 @@ def watchlist(user_id):
     """Search result page with listing of movies that query search term
 
     """
-    # user = db.session.get(User, user_id)
     watchlist = db.session.scalar(sa.select(VideoList).where(VideoList.user_id == user_id, VideoList.name == 'watchlist'))
     
-    # video_list = [api.get_video_detail(video.tmdb, video.media_type) for video in watchlist.videos]
+    query = watchlist.videos.select() #SELCT * FROM watchlist.videos?
+    videos = db.session.scalars(query).all()
     
     video_list = []
     
-    for video in watchlist.videos:
+    for video in videos:
         video_detail = api.get_video_detail(video.tmdb_id, video.media_type)
-        # video_list.append((video, video_detail))
-        video_list.append({'video': video, 'video_detail': video_detail})
-        
+        video_list.append({'video': video, 'video_detail': video_detail})    
         
         
     return render_template('watchlist.html', video_list=video_list)   
@@ -325,10 +323,10 @@ def add_to_watchlist(media_type, tmdb_id):
     if video is None:
         video = Video(tmdb_id=tmdb_id, media_type=media_type)
         db.session.add(video)
-        watchlist.videos.append(video)
+        watchlist.add_video(video)
         db.session.commit() 
     else:
-        watchlist.videos.append(video)
+        watchlist.add_video(video)
         db.session.commit()       
         
     if media_type == 'movie':
@@ -345,7 +343,7 @@ def remove_from_watchlist(media_type, tmdb_id):
     watchlist = db.session.scalar(sa.select(VideoList).where(VideoList.user_id == current_user.id, VideoList.name == 'watchlist'))
     video = db.session.scalar(sa.select(Video).where(Video.tmdb_id == tmdb_id, Video.media_type == media_type))
     
-    watchlist.videos.remove(video)
+    watchlist.remove_video(video)
     db.session.commit()    
         
     if media_type == 'movie':
