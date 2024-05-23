@@ -108,16 +108,16 @@ class VideoList(db.Model):
     def __repr__(self):
         return f"<Video List ID: {self.id}, Name: {self.name}, OwnerID: {self.user_id}>"
     
-    def video_is_in(self, video):
-        query = self.videos.select().where(Video.tmdb_id == video.tmdb_id, Video.media_type == video.media_type)
+    def video_is_in(self, tmdb_id, media_type):
+        query = self.videos.select().where(Video.tmdb_id == tmdb_id, Video.media_type == media_type)
         return db.session.scalar(query) is not None
     
     def add_video(self, video):
-        if not self.video_is_in(video):
+        if not self.video_is_in(video.tmdb_id, video.media_type):
             self.videos.add(video)
     
     def remove_video(self, video):
-        if self.video_is_in(video):
+        if self.video_is_in(video.tmdb_id, video.media_type):
             self.videos.remove(video)
 
 
