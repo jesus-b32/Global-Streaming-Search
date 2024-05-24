@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user, login_required
 import sqlalchemy as sa
 from app.models import User, Country, VideoList, Video
 from app.forms import UserRegisterForm, LoginForm
@@ -309,6 +309,7 @@ def tv_detail(tv_id):
 # video lists routes    
     
 @app.route('/user/<int:user_id>/watchlist')
+@login_required
 def watchlist(user_id):
     """Search result page with listing of movies that query search term
 
@@ -330,7 +331,7 @@ def watchlist(user_id):
 
 
 @app.route('/add/watchlist/<media_type>/<int:tmdb_id>', methods=['POST'])
-# @login_required
+@login_required
 def add_to_watchlist(media_type, tmdb_id):
     """Search result page with listing of movies that query search term
 
@@ -353,7 +354,7 @@ def add_to_watchlist(media_type, tmdb_id):
 
 
 @app.route('/remove/watchlist/<media_type>/<int:tmdb_id>', methods=['POST'])
-# @login_required
+@login_required
 def remove_from_watchlist(media_type, tmdb_id):
     """Search result page with listing of movies that query search term
 

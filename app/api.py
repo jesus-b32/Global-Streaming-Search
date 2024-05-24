@@ -20,7 +20,9 @@ def movie_details(movie_id):
     Returns:
         _type_: JSON
     """
-    url = f"https://api.themoviedb.org/3/movie/{movie_id}?append_to_response=watch%2Fproviders&language=en-US"
+    # url = f"https://api.themoviedb.org/3/movie/{movie_id}?append_to_response=watch%2Fproviders&language=en-US"
+    url = f"https://api.themoviedb.org/3/movie/{movie_id}?append_to_response=watch%2Fproviders%2Crecommendations&language=en-US"
+    
     headers = {
         "accept": "application/json",
         "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
@@ -66,7 +68,10 @@ def tv_details(tv_id):
     Returns:
         _type_: JSON
     """
-    url = f"https://api.themoviedb.org/3/tv/{tv_id}?append_to_response=watch%2Fproviders&language=en-US"
+    # url = f"https://api.themoviedb.org/3/tv/{tv_id}?append_to_response=watch%2Fproviders&language=en-US"
+    
+    url = f"https://api.themoviedb.org/3/tv/{tv_id}?append_to_response=watch%2Fproviders%2Crecommendations"
+    
     headers = {
         "accept": "application/json",
         "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"

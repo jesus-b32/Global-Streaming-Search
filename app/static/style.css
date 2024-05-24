@@ -14,3 +14,10 @@
 /* .search_bar:focus {
     box-shadow: none;
 } */
+
+/* #recommendations {
+    max-height: 300px;
+    max-width: auto;
+    overflow-y:hidden;
+    overflow-x:scroll;
+} */

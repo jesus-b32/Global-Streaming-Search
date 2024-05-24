@@ -38,6 +38,11 @@
                                 {{video.video_detail.release_date}}
                             </h6>
                             <p class="card-text">{{video.video_detail.overview}}</p>
+                            <form action="/remove/watchlist/{{video.video.media_type}}/{{video.video_detail.id}}" method="POST">
+                                <button class="btn btn-danger btn-sm">
+                                    <i class="fa-solid fa-bookmark"></i> Remove from WatchList
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

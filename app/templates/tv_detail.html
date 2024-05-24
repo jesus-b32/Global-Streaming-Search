@@ -180,4 +180,26 @@
         </div>        
     </div>
 </div>
+
+<!-- Recommendations section -->
+<div class="container overflow-x-scroll overflow-y-hidden" id="recommendations">
+    <h2>Recommendations</h2>
+    <div class="d-flex flex-nowrap">
+        {% for recommendation in tv_data.recommendations.results %}
+        <div class="me-3">
+                {% if recommendation.media_type == 'movie' %}
+                    <a href="{{url_for('movie_detail', movie_id=recommendation.id)}}">
+                        <img src="https://image.tmdb.org/t/p/w154{{recommendation.poster_path}}" class="" alt="...">
+                    </a>
+                    <h5 class=""><a href="{{url_for('movie_detail', movie_id=recommendation.id)}}">{{recommendation.title}}</a></h5>
+                {% else %}
+                    <a href="{{url_for('tv_detail', tv_id=recommendation.id)}}">
+                        <img src="https://image.tmdb.org/t/p/w154{{recommendation.poster_path}}" class="" alt="...">
+                    </a>                
+                    <h5 class=""><a href="{{url_for('tv_detail', tv_id=recommendation.id)}}">{{recommendation.title}}</a></h5>
+                {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
