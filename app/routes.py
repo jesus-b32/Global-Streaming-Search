@@ -3,7 +3,7 @@ from app import app, db
 from flask_login import current_user, login_user, logout_user, login_required
 import sqlalchemy as sa
 from app.models import User, Country, VideoList, Video
-from app.forms import UserRegisterForm, LoginForm
+from app.forms import UserRegisterForm, LoginForm, EditProfileForm
 
 from urllib.parse import urlsplit
 import app.api as api
@@ -27,23 +27,9 @@ def get_country_name(id):
     return country.name     
 
 
-# @app.template_global('video_detail')        
-# def get_video_detail(tmdb_id, media_type):
-#     """Take country ID and retrieve the country name in Region table from database. The @app.template_global decerator creates a global function that can be used in any jinja template.
 
-#     Args:
-#         id (string): id of country in Region table in database
-
-#     Returns:
-#         string: The country name associated with the country id enter
-#     """
-    
-#     if media_type == 'movie':
-#         api.movie_details(tmdb_id)
-        
-
-
-
+##############################################################################
+# User signup/login/logout
 
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
@@ -147,21 +133,22 @@ def about():
 ##############################################################################
 # General user routes:
 
-# @app.route('/users/<int:user_id>')
-# def users_show(user_id):
-#     """Show user profile."""
+@app.route('/edit_profile', methods=["GET", "POST"])
+@login_required
+def edit_profile():
+    """Show user profile."""
 
-#     user = User.query.get_or_404(user_id)
-
-#     # snagging messages in order from the database;
-#     # user.messages won't be in order by default
-#     messages = (Message
-#                 .query
-#                 .filter(Message.user_id == user_id)
-#                 .order_by(Message.timestamp.desc())
-#                 .limit(100)
-#                 .all())
-#     return render_template('users/show.html', user=user, messages=messages)
+    form = EditProfileForm(current_user.username)
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.profile_image = form.profile_image.data
+        db.session.commit()
+        flash('Your changes have been saved')
+        return redirect(url_for('edit_profile'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.profile_image.data = current_user.profile_image
+    return render_template('edit_profile.html', form=form)
 
 
 @app.route('/search')

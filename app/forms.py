@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_wtf.form import _Auto
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError
 import sqlalchemy as sa
@@ -31,10 +32,20 @@ class LoginForm(FlaskForm):
 
 
 
-class UserEditForm(FlaskForm):
+class EditProfileForm(FlaskForm):
     """Form for editing  user profile."""
 
     username = StringField('Username', validators=[DataRequired()])
     # email = StringField('E-mail', validators=[DataRequired(), Email()])
-    profile_image = StringField('Image URL (Optional)')
-    password = PasswordField('Password', validators=[Length(min=6)])
+    profile_image = StringField('Profile Image URL (Optional)')
+    # password = PasswordField('Password', validators=[Length(min=6)])
+    
+    def __init__(self, original_username, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.original_username = original_username
+        
+    def validate_username(self, username):
+        if username.data != self.original_username:
+            user = db.session.scalar(sa.select(User).where(User.username == self.username.data))
+        if user is not None:
+            raise ValidationError('Please user a different username')
