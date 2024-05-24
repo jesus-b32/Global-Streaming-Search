@@ -212,9 +212,12 @@ def movie_detail(movie_id):
     movie_data = api.movie_details(movie_id)
     
     #check if this TV show is in user's watchlist
-    watchlist = db.session.scalar(sa.select(VideoList).where(VideoList.user_id == current_user.id, VideoList.name == 'watchlist'))
-    
-    in_watchlist = watchlist.video_is_in(movie_id, 'movie')   
+    if(current_user.is_authenticated):
+        watchlist = db.session.scalar(sa.select(VideoList).where(VideoList.user_id == current_user.id, VideoList.name == 'watchlist'))
+        
+        in_watchlist = watchlist.video_is_in(movie_id, 'movie')
+    else:
+        in_watchlist = None
     
     
     return render_template('movie_detail.html',
@@ -273,14 +276,13 @@ def tv_detail(tv_id):
     tv_data = api.tv_details(tv_id)
     
     #check if this TV show is in user's watchlist
-    watchlist = db.session.scalar(sa.select(VideoList).where(VideoList.user_id == current_user.id, VideoList.name == 'watchlist'))
+    if(current_user.is_authenticated):
+        watchlist = db.session.scalar(sa.select(VideoList).where(VideoList.user_id == current_user.id, VideoList.name == 'watchlist'))
+        
+        in_watchlist = watchlist.video_is_in(tv_id, 'tv')
+    else:
+        in_watchlist = None
     
-    in_watchlist = watchlist.video_is_in(tv_id, 'tv')
-    
-    # query = watchlist.videos.select().where(Video.tmdb_id == tv_id, Video.media_type == 'tv')
-    # in_watchlist = db.session.scalar(query) is not None
-    
-    # video = db.session.scalar(sa.select(Video).where(Video.tmdb_id == tv_id, Video.media_type == 'tv'))    
     
     return render_template('tv_detail.html',
                             tv_data=tv_data,
