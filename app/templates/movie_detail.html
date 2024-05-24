@@ -56,8 +56,30 @@
 </div>
 
 
+<div class="container mb-5">
+    <h2>Find out where you can stream {{movie_data.title}}</h2>
+    <p>
+        JustWatch makes it easy to find out where you can legally watch your favorite movies & TV shows online. Visit <a href="https://www.justwatch.com/">JustWatch</a> for more information. <img src="/static/images/justwatch.svg" alt="Just Watch Logo" class="" id="tmdb_logo">
+    </p>
+    <div class="container" id="visibility_selection">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="view_select" id="country_view" checked>
+            <label class="form-check-label" for="country_view">
+                View Streaming Availablility by Country    
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="view_select" id="provider_view">
+            <label class="form-check-label" for="provider_view">
+                View Streaming Availablility by Streaming Provider
+            </label>
+        </div>
+    </div>    
+</div>
+
+
 <!-- This div section contains streaming data by country -->
-<div class="container-fluid">
+<div class="container-fluid" id="country_section">
     <div class="row mb-5">
         <!-- rows containing streaming providers seperated by type(called type) -->
         <div class="col-9">
@@ -114,9 +136,8 @@
 </div>
 
 
-
 <!-- This div section contains streaming data by streaming provider. -->
-<div class="container-fluid">
+<div class="container-fluid d-none" id="provider_section">
     <div class="row mb-5">
         <!-- column displays all countries flags where the movie is available for the selected provider -->
         <div class="col-9">
