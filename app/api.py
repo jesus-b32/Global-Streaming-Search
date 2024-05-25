@@ -2,8 +2,8 @@ import requests
 
 
 ############# Movie API calls ###############################
-def movie_search(search):
-    url = f"https://api.themoviedb.org/3/search/movie?query={search}&include_adult=false&language=en-US&page=1"
+def movie_search(search, page):
+    url = f"https://api.themoviedb.org/3/search/movie?query={search}&include_adult=false&language=en-US&page={page}"
 
     headers = {
         "accept": "application/json",
@@ -50,8 +50,8 @@ def movie_provider_list():
 
 
 ############# TV show API calls #############################################
-def tv_search(search):
-    url = f"https://api.themoviedb.org/3/search/tv?query={search}&include_adult=false&language=en-US&page=1"
+def tv_search(search, page):
+    url = f"https://api.themoviedb.org/3/search/tv?query={search}&include_adult=false&language=en-US&page={page}"
 
     headers = {
         "accept": "application/json",

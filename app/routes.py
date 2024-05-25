@@ -161,26 +161,29 @@ def search():
     media_type = request.args.get('media_type')
         
     if media_type == 'movie':
-        return redirect(url_for('movie_searching', search=search))
+        return redirect(url_for('movie_searching', search=search, page=1))
     
-    return redirect(url_for('tv_searching', search=search))
+    return redirect(url_for('tv_searching', search=search, page=1))
 
 
 ##############################################################################
 # Movie routes:
 
-@app.route('/search/movie')
+@app.route('/search/movie/')
 def movie_searching():
     """Search result page with listing of movies that query search term
 
     """
 
     search = request.args.get('search')
-    movie_data = api.movie_search(search)
+    current_page = request.args.get('page', type=int)
+    movie_data = api.movie_search(search, current_page)
+    
         
     return render_template('movie_results.html',
                             search=search,
-                            movie_data=movie_data)
+                            movie_data=movie_data,
+                            current_page=current_page)
 
     
 @app.route('/movie/<int:movie_id>')
@@ -233,18 +236,20 @@ def movie_detail(movie_id):
 ############################################################################
 #TV routes
     
-@app.route('/search/tv')
+@app.route('/search/tv/')
 def tv_searching():
     """Search result page with listing of movies that query search term
 
     """
 
     search = request.args.get('search')
-    tv_data = api.tv_search(search)
+    current_page = request.args.get('page', type=int)
+    tv_data = api.tv_search(search, current_page)
         
     return render_template('tv_results.html',
                             search=search,
-                            tv_data=tv_data)
+                            tv_data=tv_data,
+                            current_page=current_page)
 
 
 @app.route('/tv/<int:tv_id>')
