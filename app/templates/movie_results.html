@@ -2,10 +2,8 @@
 {% block content %}
     <div class="container mb-4">
         <h1 class="text-center">Movie Search Results for: {{search}}</h1>
-        <div class="container text-center">
-            <div class="row">
-                <a href="{{url_for('tv_searching', search = search, page = 1)}}"">TV</a>
-            </div>
+        <div class="container text-center mb-3">
+            <a class="btn btn-primary" href="{{url_for('tv_searching', search = search, page = 1)}}"">TV</a>
         </div>
         {% for result in movie_data.results %}
             <div class="card mb-3">
@@ -36,7 +34,7 @@
             </div>
         {% endfor %}
 
-        
+
         <!-- pagination -->
         <nav aria-label="result naviagation">
             <ul class="pagination justify-content-center">
