@@ -15,6 +15,7 @@ sys.path.append(parent)
 
 import unittest
 from app import app, db
+import sqlalchemy as sa
 from app.models import User, Country, VideoList, Video
 
 
@@ -35,6 +36,22 @@ class UserModelCase(unittest.TestCase):
         
         self.assertFalse(user.check_password('password123'))
         self.assertTrue(user.check_password('password'))
+        
+    def test_video_lists_relationship(self):
+        user = User(username='john')
+        user.set_password('password')
+        db.session.add(user)
+        db.session.commit()
+        
+        video_list = VideoList(user_id=user.id, name='watchlist')
+        db.session.add(video_list)
+        db.session.commit()
+                
+        query = user.video_lists.select().where(VideoList.name == 'watchlist')
+        user_watchlist = db.session.scalar(query)
+        
+        self.assertTrue(video_list.owner == user)
+        self.assertTrue(user_watchlist == video_list)        
         
         
 if __name__ == '__main__':
