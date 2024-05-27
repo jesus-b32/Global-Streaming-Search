@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.form import _Auto
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError
 import sqlalchemy as sa
 from app import db
@@ -49,3 +49,22 @@ class EditProfileForm(FlaskForm):
             user = db.session.scalar(sa.select(User).where(User.username == self.username.data))
         if user is not None:
             raise ValidationError('Please user a different username')
+
+
+class DiscoverForm(FlaskForm):
+    """Discover form for movies."""
+
+    media_type = SelectField('Select Media Type:',
+                            choices=[('movie', 'Movie'), ('tv', 'TV Show')],
+                            validators=[DataRequired()])
+    
+    
+# class DiscoverMovieForm(FlaskForm):
+#     """Discover form for movies."""
+
+#     media_type = SelectField('Select Media Type:',
+#                             choices=[('movie', 'Movie'), ('tv', 'TV Show')],
+#                             validators=[DataRequired()])
+    
+#     username = StringField('Username', validators=[DataRequired()])
+#     remember_me = BooleanField('Remember Me')

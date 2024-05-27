@@ -362,3 +362,75 @@ def remove_from_watchlist(media_type, tmdb_id):
     if media_type == 'movie':
             return redirect(url_for('movie_detail', movie_id=tmdb_id))
     return redirect(url_for('tv_detail', tv_id=tmdb_id))
+#############################################################################
+
+#############################################################################
+# discover routes    
+
+# @app.route('/discover')
+# def discover():
+#     """Show discover page:
+
+#     """
+
+#     return render_template('discover.html')
+
+    
+# @app.route('/discover/search')
+# @login_required
+# def discover_search():
+#     """Redirect to movie or tv show discover routes to show result page based on user selection and search term
+
+#     """
+
+#     search = request.args.get('search')
+#     media_type = request.args.get('media_type')
+        
+#     if media_type == 'movie':
+#         return redirect(url_for('discover_movie', search=search, page=1))
+    
+#     return redirect(url_for('discover_tv', search=search, page=1))
+
+
+@app.route('/discover/movie/<category>')
+def discover_movie(category):
+    """Discover Search result page with listing of movies based opn filter entered by user
+
+    """
+    current_page = request.args.get('page', type=int)
+    if category == 'popular':  
+        movie_data = api.movie_popular(current_page)
+    elif category == 'top-rated':
+        movie_data = api.movie_top_rated(current_page)
+    elif category == 'now-playing':
+        movie_data = api.movie_now_playing(current_page)
+    elif category == 'upcoming':
+        movie_data = api.movie_upcoming(current_page)
+    
+        
+    return render_template('discover_movies.html',
+                            category=category,
+                            movie_data=movie_data,
+                            current_page=current_page)
+
+
+@app.route('/discover/tv/<category>')
+def discover_tv(category):
+    """Discover Search result page with listing of tv shows based opn filter entered by user
+
+    """
+    current_page = request.args.get('page', type=int)
+    if category == 'popular':  
+        tv_data = api.tv_popular(current_page)
+    elif category == 'top-rated':
+        tv_data = api.tv_top_rated(current_page)
+    elif category == 'on-the-air':
+        tv_data = api.tv_on_the_air(current_page)
+    elif category == 'airing-today':
+        tv_data = api.tv_airing_today(current_page)
+    
+        
+    return render_template('discover_tv.html',
+                            category=category,
+                            tv_data=tv_data,
+                            current_page=current_page)

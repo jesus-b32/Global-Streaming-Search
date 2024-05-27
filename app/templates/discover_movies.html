@@ -1,10 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
     <div class="container mb-4">
-        <h1 class="text-center">Movie Search Results for: {{search}}</h1>
-        <div class="container text-center mb-3">
-            <a class="btn btn-primary" href="{{url_for('tv_searching', search = search, page = 1)}}"">TV</a>
-        </div>
+        <h1 class="text-center">{{category.capitalize()}} Movies</h1>
         {% for result in movie_data.results %}
             <div class="card mb-3">
                 <div class="row g-0">
@@ -42,14 +39,14 @@
                     {% if movie_data.page == 1 %}
                     <span class="page-link">&#8810;</span>
                     {% else %}
-                    <a class="page-link" href="{{url_for('movie_searching', search = search, page = 1)}}"><span>&#8810;</span></a>
+                    <a class="page-link" href="{{url_for('discover_movie', category = category, page = 1)}}"><span>&#8810;</span></a>
                     {% endif %}
                 </li>                  
                 <li class="page-item {% if movie_data.page == 1 %} disabled {% endif %}">
                     {% if movie_data.page == 1 %}
                     <span class="page-link">&#60;</span>
                     {% else %}
-                    <a class="page-link" href="{{url_for('movie_searching', search = search, page = (current_page - 1))}}"><span>&#60;</span></a>
+                    <a class="page-link" href="{{url_for('discover_movie', category = category, page = (current_page - 1))}}"><span>&#60;</span></a>
                     {% endif %}
                 </li>                
                 {% for page in range(1, (movie_data.total_pages + 1)) %}
@@ -58,23 +55,23 @@
                             <span class="page-link">{{page}}</span>
                         </li>
                     {% elif (current_page - page) > 3 or (page - current_page) > 3 %}
-                        <li class="page-item d-none"><a class="page-link" href="{{url_for('movie_searching', search = search, page = page)}}">{{page}}</a></li>                        
+                        <li class="page-item d-none"><a class="page-link" href="{{url_for('discover_movie', category = category, page = page)}}">{{page}}</a></li>                        
                     {% else %}
-                        <li class="page-item"><a class="page-link" href="{{url_for('movie_searching', search = search, page = page)}}">{{page}}</a></li>
+                        <li class="page-item"><a class="page-link" href="{{url_for('discover_movie', category = category, page = page)}}">{{page}}</a></li>
                     {% endif %}
                 {% endfor %}
                 <li class="page-item {% if movie_data.page == movie_data.total_pages %} disabled {% endif %}">
                     {% if movie_data.page == movie_data.total_pages %}
                     <span class="page-link">&#62;</span>
                     {% else %}
-                    <a class="page-link" href="{{url_for('movie_searching', search = search, page = (current_page + 1))}}"><span>&#62;</span></a>
+                    <a class="page-link" href="{{url_for('discover_movie', category = category, page = (current_page + 1))}}"><span>&#62;</span></a>
                     {% endif %}
                 </li>
                 <li class="page-item {% if movie_data.page == movie_data.total_pages %} disabled {% endif %}">
                     {% if movie_data.page == movie_data.total_pages %}
                     <span class="page-link">&#8811;</span>
                     {% else %}
-                    <a class="page-link" href="{{url_for('movie_searching', search = search, page = movie_data.total_pages)}}"><span>&#8811;</span></a>
+                    <a class="page-link" href="{{url_for('discover_movie', category = category, page = movie_data.total_pages)}}"><span>&#8811;</span></a>
                     {% endif %}
                 </li>                   
             </ul>

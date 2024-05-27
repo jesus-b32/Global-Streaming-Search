@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <h1 class="text-center">{{category.capitalize()}} TV Shows</h1>
+        {% for result in tv_data.results %}
+            <div class="card mb-3">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <a href="{{url_for('tv_detail', tv_id=result.id)}}">
+                        {% if  result.poster_path %}
+                            <img src="https://image.tmdb.org/t/p/w185{{result.poster_path}}" class="img-fluid rounded-start" alt="Movie Poster">
+                        {% else %}
+                            <img width="100" height="100" src="https://img.icons8.com/ios-filled/100/no-image.png" alt="no-image"/>
+                        {% endif %}
+                        </a>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{{url_for('tv_detail', tv_id=result.id)}}">{{result.name}}</a>
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-body-secondary">{{result.first_air_date}}</h6>
+                            <p class="card-text">{{result.overview}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+        {% endfor %}
+
+
+        <!-- pagination -->
+        <nav aria-label="result naviagation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if tv_data.page == 1 %} disabled {% endif %}">
+                    {% if tv_data.page == 1 %}
+                    <span class="page-link">&#8810;</span>
+                    {% else %}
+                    <a class="page-link" href="{{url_for('discover_tv', category = category, page = 1)}}"><span>&#8810;</span></a>
+                    {% endif %}
+                </li>   
+                <li class="page-item {% if tv_data.page == 1 %} disabled {% endif %}">
+                    {% if tv_data.page == 1 %}
+                    <span class="page-link">&#60;</span>
+                    {% else %}
+                    <a class="page-link" href="{{url_for('discover_tv', category = category, page = (current_page - 1))}}"><span>&#60;</span></a>
+                    {% endif %}
+                </li>                
+                {% for page in range(1, (tv_data.total_pages + 1)) %}
+                    {% if page == current_page %}
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link">{{page}}</span>
+                        </li>                    
+                    {% elif (current_page - page) > 3 or (page - current_page) > 3 %}
+                        <li class="page-item d-none"><a class="page-link" href="{{url_for('discover_tv', category = category, page = page)}}">{{page}}</a></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="{{url_for('discover_tv', category = category, page = page)}}">{{page}}</a></li>
+                    {% endif %}
+                {% endfor %}
+                <li class="page-item {% if tv_data.page == tv_data.total_pages %} disabled {% endif %}">
+                    {% if tv_data.page == tv_data.total_pages %}
+                    <span class="page-link">&#62;</span>
+                    {% else %}
+                    <a class="page-link" href="{{url_for('discover_tv', category = category, page = (current_page + 1))}}"><span>&#62;</span></a>
+                    {% endif %}
+                </li>
+                <li class="page-item {% if tv_data.page == tv_data.total_pages %} disabled {% endif %}">
+                    {% if tv_data.page == tv_data.total_pages %}
+                    <span class="page-link">&#8811;</span>
+                    {% else %}
+                    <a class="page-link" href="{{url_for('discover_tv', category = category, page = tv_data.total_pages)}}"><span>&#8811;</span></a>
+                    {% endif %}
+                </li>                
+            </ul>
+        </nav>        
+    </div>
+{% endblock %}   

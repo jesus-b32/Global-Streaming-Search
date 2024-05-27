@@ -24,9 +24,28 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="#">Pick for Me</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Discover Movies
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{url_for('discover_movie', category='popular', page=1)}}">Popular</a></li>                    
+                        <li><a class="dropdown-item" href="{{url_for('discover_movie', category='top-rated', page=1)}}">Top Rated</a></li>                    
+                        <li><a class="dropdown-item" href="{{url_for('discover_movie', category='now-playing', page=1)}}">Now Playing</a></li>                    
+                        <li><a class="dropdown-item" href="{{url_for('discover_movie', category='upcoming', page=1)}}">Upcoming</a></li>                    
+                    </ul>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Discover TV Shows
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{url_for('discover_tv', category='popular', page=1)}}">Popular</a></li>                    
+                        <li><a class="dropdown-item" href="{{url_for('discover_tv', category='top-rated', page=1)}}">Top Rated</a></li>                    
+                        <li><a class="dropdown-item" href="{{url_for('discover_tv', category='on-the-air', page=1)}}">On the Air</a></li>                    
+                        <li><a class="dropdown-item" href="{{url_for('discover_tv', category='airing-today', page=1)}}">Airing Today</a></li>                    
+                    </ul>
+                </li>                
                 {% if not current_user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="{{url_for('signup')}}">Sign up</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{url_for('login')}}">Log in</a></li>
@@ -45,7 +64,7 @@
                         <li><a class="dropdown-item" href="{{url_for('edit_profile')}}">Edit Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="#">Watchlist</a></li>
-                        <li><a class="dropdown-item" href="#">Favorites</a></li>
+                        <!-- <li><a class="dropdown-item" href="#">Favorites</a></li> -->
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{{url_for('logout')}}">Logout</a></li>                    
                     </ul>
