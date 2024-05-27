@@ -125,7 +125,7 @@ def movie_top_rated(page):
 
 
 def movie_now_playing(page):
-    url = f"https://api.themoviedb.org/3/movie/now_playing?page={page}"
+    url = f"https://api.themoviedb.org/3/movie/now_playing?page={page}&region=US"
 
     headers = {
         "accept": "application/json",
@@ -137,7 +137,7 @@ def movie_now_playing(page):
 
 
 def movie_upcoming(page):
-    url = f"https://api.themoviedb.org/3/movie/upcoming?page={page}"
+    url = f"https://api.themoviedb.org/3/movie/upcoming?page={page}&region=US"
 
     headers = {
         "accept": "application/json",
@@ -215,6 +215,17 @@ def tv_airing_today(page):
 
     response = requests.get(url, headers=headers)
     return response.json()
+
+# def tv_upcoming(page):
+#     url = f"https://api.themoviedb.org/3/tv/airing_today?page={page}"
+
+#     headers = {
+#         "accept": "application/json",
+#         "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYmNiNDk2NzgyY2E1MTdlZDVjZmQ0MDhmM2YxZWRiZCIsInN1YiI6IjY2MmViMjY4MjRmMmNlMDEyMzJhZDJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._z0ha6kQXHFrcvQVPzH0xbYLXSVs1pVwvbqgxVfdyiI"
+#     }
+
+#     response = requests.get(url, headers=headers)
+#     return response.json()
 
 
 
