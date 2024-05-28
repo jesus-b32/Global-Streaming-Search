@@ -1,4 +1,4 @@
-// JS script using Tom Select Plugin
+// JS script using Tom Select Plugin for selecting country or providers in detail page
 new TomSelect('#country', {
     maxOptions: null,
     sortField: {
@@ -14,6 +14,10 @@ new TomSelect('#streamingProvider', {
         direction: "asc"
     }
 });
+
+// Enabling tootips for bootstrap
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
 
 //toggeling the display of streaming data by country or provider

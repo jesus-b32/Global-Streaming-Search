@@ -42,18 +42,24 @@
                         Overview
                     </h4>                        
                     <p class="card-text">{{tv_data.overview}}</p>
-                    {% if  not in_watchlist %}
-                        <form action="/add/watchlist/tv/{{tv_data.id}}" method="POST">
-                            <button class="btn btn-primary btn-sm">
-                                <i class="fa-regular fa-bookmark"></i> Add to WatchList
-                            </button>
-                        </form>
+                    {% if current_user.is_authenticated %}
+                        {% if  not in_watchlist %}
+                            <form action="/add/watchlist/tv/{{tv_data.id}}" method="POST">
+                                <button class="btn btn-primary btn-sm">
+                                    <i class="fa-regular fa-bookmark"></i> Add to WatchList
+                                </button>
+                            </form>
+                        {% else %}
+                            <form action="/remove/watchlist/tv/{{tv_data.id}}" method="POST">
+                                <button class="btn btn-danger btn-sm">
+                                    <i class="fa-solid fa-bookmark"></i> Remove from WatchList
+                                </button>
+                            </form>
+                        {% endif %}
                     {% else %}
-                        <form action="/remove/watchlist/tv/{{tv_data.id}}" method="POST">
-                            <button class="btn btn-danger btn-sm">
-                                <i class="fa-solid fa-bookmark"></i> Remove from WatchList
-                            </button>
-                        </form>
+                        <button type="button" class="btn btn-primary watchlist_btn" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Login to add to your watchlist">
+                            <i class="fa-regular fa-bookmark"></i> Add to WatchList
+                        </button>                            
                     {% endif %}                    
                 </div>
             </div>
