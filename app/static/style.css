@@ -11,3 +11,31 @@
 #tmdb_logo {
     width: 100px;
 }
+
+.profile_img {
+    height: 45px;
+    width: auto;
+    border-radius: 50%;
+}
+
+
+.edit_profile_image {
+    height: 200px;
+    width: auto;
+    border-radius: 50%;    
+}
+
+/* .image-cropper {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.edit_profile_image {
+    margin: 0 auto;
+    margin-left: -25%;
+    height: 100%;
+    width: auto;
+} */

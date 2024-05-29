@@ -140,7 +140,7 @@ def edit_profile():
     form = EditProfileForm(current_user.username)
     if form.validate_on_submit():
         current_user.username = form.username.data
-        current_user.profile_image = form.profile_image.data
+        current_user.profile_image = form.profile_image.data or User.profile_image.default.arg
         db.session.commit()
         flash('Your changes have been saved')
         return redirect(url_for('edit_profile'))
@@ -149,8 +149,11 @@ def edit_profile():
         form.username.data = current_user.username
         form.profile_image.data = current_user.profile_image
     return render_template('edit_profile.html', form=form)
+##############################################################################
 
 
+##############################################################################
+# Movie and Tv show search route:
 @app.route('/search')
 def search():
     """Redirect to movie or tv show result page based on user selection
@@ -164,6 +167,7 @@ def search():
         return redirect(url_for('movie_searching', search=search, page=1))
     
     return redirect(url_for('tv_searching', search=search, page=1))
+##############################################################################
 
 
 ##############################################################################

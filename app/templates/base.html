@@ -53,11 +53,8 @@
                 <li class="nav-item"><a class="nav-link" href="{{url_for('watchlist', user_id=current_user.id)}}">My WatchList</a></li>                    
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        {% if current_user.is_authenticated %}
-                            <b>{{current_user.username}}</b>
-                        {% else %}
-                            Profile
-                        {% endif %}
+                        <!-- <b>{{current_user.username}}</b> -->
+                        <img src="{{current_user.profile_image}}" alt="profile image" class="img-fluid profile_img" id="profile_img">
                     </a>
                     <ul class="dropdown-menu">
                         <!-- <li class="dropdown-item">{{current_user.username}}</li> -->
@@ -167,3 +164,10 @@
 
 </body>
 </html>
+
+
+<!-- {% if current_user.is_authenticated %}
+<b>{{current_user.username}}</b>
+{% else %}
+Profile
+{% endif %} -->

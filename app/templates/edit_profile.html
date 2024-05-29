@@ -3,12 +3,15 @@
 
 {% block content %}
 
-<div class="row justify-content-md-center mt-3">
+<div class="row justify-content-md-center my-5">
     <div class="col-md-7 col-lg-5">
-        <h1 class="join-message">Edit Profile</h1>
+        <h1 class="text-center mb-4">Edit Profile</h1>
+        <div class="d-flex justify-content-center mb-3">
+            <img src="{{current_user.profile_image}}" alt="profile image" class="edit_profile_image">
+        </div>
         <form method="POST">
             {% include "form.html" %}
-        <button class="btn btn-primary btn-lg btn-block">Submit</button>
+        <button class="btn btn-primary btn-lg btn-block mt-3">Submit</button>
         </form>
     </div>
 </div>
