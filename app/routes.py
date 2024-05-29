@@ -52,7 +52,7 @@ def signup():
         db.session.add(user)
         db.session.commit()
         
-        #giver new user a watchlist and favorites list
+        #give new user a watchlist
         watchlist = VideoList(user_id = user.id,
                             name = 'watchlist')
         favorites = VideoList(user_id = user.id,
@@ -78,6 +78,7 @@ def login():
     if form.validate_on_submit():
         user = db.session.scalar(sa.select(User).where(User.username == form.username.data))
 
+        # flash message if no user found or invalid password
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
@@ -110,8 +111,6 @@ def logout():
 def homepage():
     """Show homepage:
 
-    - anon users: no messages
-    - logged in: 100 most recent messages of followed_users
     """
 
     return render_template('home-anon.html')
@@ -136,7 +135,7 @@ def about():
 @app.route('/edit_profile', methods=["GET", "POST"])
 @login_required
 def edit_profile():
-    """Show user profile."""
+    """Show user profile and allow to edit username and profile image."""
 
     form = EditProfileForm(current_user.username)
     if form.validate_on_submit():
@@ -145,6 +144,7 @@ def edit_profile():
         db.session.commit()
         flash('Your changes have been saved')
         return redirect(url_for('edit_profile'))
+    # prefill form with user data
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.profile_image.data = current_user.profile_image
@@ -171,7 +171,7 @@ def search():
 
 @app.route('/search/movie/')
 def movie_searching():
-    """Search result page with listing of movies that query search term
+    """Search result page with listing of movies from query search term
 
     """
 
@@ -202,10 +202,10 @@ def movie_detail(movie_id):
     if not provider_selected:
         provider_selected = 8
     
-    #list of countries with streaming data
+    #json of countries with streaming data
     countries = api.country_list()
     
-    #list of streamingn providers for movies
+    #json of streamingn providers for movies
     providers = api.movie_provider_list()
     
     #gets the name of the provider user selected
@@ -238,7 +238,7 @@ def movie_detail(movie_id):
     
 @app.route('/search/tv/')
 def tv_searching():
-    """Search result page with listing of movies that query search term
+    """Search result page with listing of movies for that query search term
 
     """
 
@@ -268,10 +268,10 @@ def tv_detail(tv_id):
     if not provider_selected:
         provider_selected = 8
     
-    #list of countries with streaming data
+    #json of countries with streaming data
     countries = api.country_list()
     
-    #list of streamingn providers for tv shows
+    #json of streamingn providers for tv shows
     providers = api.tv_provider_list()
     
     #gets the name of the provider user selected
@@ -305,15 +305,15 @@ def tv_detail(tv_id):
 @app.route('/user/<int:user_id>/watchlist')
 @login_required
 def watchlist(user_id):
-    """Search result page with listing of movies that query search term
+    """Display user watchlist
 
     """
     watchlist = db.session.scalar(sa.select(VideoList).where(VideoList.user_id == user_id, VideoList.name == 'watchlist'))
     
-    query = watchlist.videos.select() #SELCT * FROM watchlist.videos?
-    videos = db.session.scalars(query).all()
+    query = watchlist.videos.select()
+    videos = db.session.scalars(query).all() # make into a list
     
-    video_list = []
+    video_list = [] # will contain the video and video detail grouped in dict
     
     for video in videos:
         video_detail = api.get_video_detail(video.tmdb_id, video.media_type)
@@ -327,7 +327,7 @@ def watchlist(user_id):
 @app.route('/add/watchlist/<media_type>/<int:tmdb_id>', methods=['POST'])
 @login_required
 def add_to_watchlist(media_type, tmdb_id):
-    """Search result page with listing of movies that query search term
+    """Add a movie or TV show to user watchlist
 
     """
     watchlist = db.session.scalar(sa.select(VideoList).where(VideoList.user_id == current_user.id, VideoList.name == 'watchlist'))
@@ -350,7 +350,7 @@ def add_to_watchlist(media_type, tmdb_id):
 @app.route('/remove/watchlist/<media_type>/<int:tmdb_id>', methods=['POST'])
 @login_required
 def remove_from_watchlist(media_type, tmdb_id):
-    """Search result page with listing of movies that query search term
+    """Remove a movie or TV show to user watchlist
 
     """
     watchlist = db.session.scalar(sa.select(VideoList).where(VideoList.user_id == current_user.id, VideoList.name == 'watchlist'))
@@ -365,36 +365,11 @@ def remove_from_watchlist(media_type, tmdb_id):
 #############################################################################
 
 #############################################################################
-# discover routes    
-
-# @app.route('/discover')
-# def discover():
-#     """Show discover page:
-
-#     """
-
-#     return render_template('discover.html')
-
-    
-# @app.route('/discover/search')
-# @login_required
-# def discover_search():
-#     """Redirect to movie or tv show discover routes to show result page based on user selection and search term
-
-#     """
-
-#     search = request.args.get('search')
-#     media_type = request.args.get('media_type')
-        
-#     if media_type == 'movie':
-#         return redirect(url_for('discover_movie', search=search, page=1))
-    
-#     return redirect(url_for('discover_tv', search=search, page=1))
-
+# discover routes
 
 @app.route('/discover/movie/<category>')
 def discover_movie(category):
-    """Discover Search result page with listing of movies based opn filter entered by user
+    """Display list  of movies based on one of the following categories: popular, top-rated, now-playing, and upcoming
 
     """
     current_page = request.args.get('page', type=int)
@@ -416,7 +391,7 @@ def discover_movie(category):
 
 @app.route('/discover/tv/<category>')
 def discover_tv(category):
-    """Discover Search result page with listing of tv shows based opn filter entered by user
+    """Display list of TV shows based on one of the following categories: popular, top-rated, on-the-air, and v_airing_today
 
     """
     current_page = request.args.get('page', type=int)

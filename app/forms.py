@@ -33,7 +33,7 @@ class LoginForm(FlaskForm):
 
 
 class EditProfileForm(FlaskForm):
-    """Form for editing  user profile."""
+    """Form for editing user profile."""
 
     username = StringField('Username', validators=[DataRequired()])
     # email = StringField('E-mail', validators=[DataRequired(), Email()])
@@ -49,22 +49,3 @@ class EditProfileForm(FlaskForm):
             user = db.session.scalar(sa.select(User).where(User.username == self.username.data))
         if user is not None:
             raise ValidationError('Please user a different username')
-
-
-class DiscoverForm(FlaskForm):
-    """Discover form for movies."""
-
-    media_type = SelectField('Select Media Type:',
-                            choices=[('movie', 'Movie'), ('tv', 'TV Show')],
-                            validators=[DataRequired()])
-    
-    
-# class DiscoverMovieForm(FlaskForm):
-#     """Discover form for movies."""
-
-#     media_type = SelectField('Select Media Type:',
-#                             choices=[('movie', 'Movie'), ('tv', 'TV Show')],
-#                             validators=[DataRequired()])
-    
-#     username = StringField('Username', validators=[DataRequired()])
-#     remember_me = BooleanField('Remember Me')

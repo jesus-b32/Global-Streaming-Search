@@ -1,5 +1,6 @@
 #net {
     background-color: aqua;
+    border-top: 5px;
 }
 
 .flag {
@@ -10,20 +11,3 @@
 #tmdb_logo {
     width: 100px;
 }
-
-.watchlist_btn {
-    box-shadow: none;
-    border-style: none;
-    white-space: nowrap;
-}
-
-/* .search_bar:focus {
-    box-shadow: none;
-} */
-
-/* #recommendations {
-    max-height: 300px;
-    max-width: auto;
-    overflow-y:hidden;
-    overflow-x:scroll;
-} */

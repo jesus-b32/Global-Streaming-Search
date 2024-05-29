@@ -1,4 +1,4 @@
-""" Create all tables
+""" 
 Seed database with configuration data from TMDB API. Do this you need run flask shell command. From there import seed.py like this: import app.seed as seed. From there run the function to seed database table. EX: seed.fill_country_table()
 """
 

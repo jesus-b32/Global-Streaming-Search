@@ -46,7 +46,7 @@ class User(UserMixin, db.Model):
 
 
 class Country(db.Model):
-    """An individual message ("warble")."""
+    """Countries will tmdb data"""
 
     __tablename__ = 'countries'
 
@@ -71,7 +71,7 @@ video_list_videos = sa.Table(
 
 
 class Video(db.Model):
-    """An individual message ("warble")."""
+    """Contains the TMDB id and whether it is movie or a TV show"""
 
     __tablename__ = 'videos'
 
@@ -89,7 +89,7 @@ class Video(db.Model):
         return f"<Video ID: {self.id}, Media Type: {self.media_type}, TMDB ID: {self.tmdb_id}>"
     
 class VideoList(db.Model):
-    """An individual message ("warble")."""
+    """VIdeo list that is associated with a user and will store videos user select"""
 
     __tablename__ = 'video_lists'
 
@@ -108,14 +108,17 @@ class VideoList(db.Model):
     def __repr__(self):
         return f"<Video List ID: {self.id}, Name: {self.name}, OwnerID: {self.user_id}>"
     
+    # check if a video is already in this videolist
     def video_is_in(self, tmdb_id, media_type):
         query = self.videos.select().where(Video.tmdb_id == tmdb_id, Video.media_type == media_type)
         return db.session.scalar(query) is not None
     
+    # add a video to this videolist
     def add_video(self, video):
         if not self.video_is_in(video.tmdb_id, video.media_type):
             self.videos.add(video)
     
+    # remove a video to this videolist
     def remove_video(self, video):
         if self.video_is_in(video.tmdb_id, video.media_type):
             self.videos.remove(video)
