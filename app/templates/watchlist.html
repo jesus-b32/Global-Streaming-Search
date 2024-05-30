@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div class="container mb-4">
+    <div class="container mb-4" id="watchlist_container">
         <h1 class="text-center">My Watch List</h1>
         {% if not video_list %}
             <h2 class="text-center">No videos in your watchlist</h2>
         {% else %}
 
         {% for video in video_list %}
-            <div class="card mb-3">
+            <div class="card mb-3" id="{{video.video.media_type}}-{{video.video_detail.id}}">
                 <div class="row g-0">
                     <div class="col-md-4">
                         {% if  video.video_detail.poster_path %}
@@ -33,11 +33,9 @@
                                 {{video.video_detail.release_date}}
                             </h6>
                             <p class="card-text">{{video.video_detail.overview}}</p>
-                            <form action="/remove/watchlist/{{video.video.media_type}}/{{video.video_detail.id}}" method="POST">
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="fa-solid fa-bookmark"></i> Remove from WatchList
-                                </button>
-                            </form>
+                            <button class="btn btn-danger btn-sm" id="btn-{{video.video.media_type}}-{{video.video_detail.id}}" data-tmdb-id="{{video.video_detail.id}}" data-media-type="{{video.video.media_type}}">
+                                <i class="fa-solid fa-bookmark no-click"></i> Remove from WatchList
+                            </button>
                         </div>
                     </div>
                 </div>
