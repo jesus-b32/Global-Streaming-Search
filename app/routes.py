@@ -328,17 +328,19 @@ def watchlist(user_id):
 
 
 
-@app.route('/add/watchlist/<media_type>/<int:tmdb_id>', methods=['POST'])
+@app.route('/watchlist/add', methods=['POST'])
 @login_required
-def add_to_watchlist(media_type, tmdb_id):
+def add_to_watchlist():
     """Add a movie or TV show to user watchlist
 
     """
+    data = request.get_json()
+    
     watchlist = db.session.scalar(sa.select(VideoList).where(VideoList.user_id == current_user.id, VideoList.name == 'watchlist'))
-    video = db.session.scalar(sa.select(Video).where(Video.tmdb_id == tmdb_id, Video.media_type == media_type))
+    video = db.session.scalar(sa.select(Video).where(Video.tmdb_id == data['tmdb_id'], Video.media_type == data['media_type']))
     
     if video is None:
-        video = Video(tmdb_id=tmdb_id, media_type=media_type)
+        video = Video(tmdb_id=data['tmdb_id'], media_type=data['media_type'])
         db.session.add(video)
         watchlist.add_video(video)
         db.session.commit() 
@@ -346,26 +348,26 @@ def add_to_watchlist(media_type, tmdb_id):
         watchlist.add_video(video)
         db.session.commit()       
         
-    if media_type == 'movie':
-            return redirect(url_for('movie_detail', movie_id=tmdb_id))
-    return redirect(url_for('tv_detail', tv_id=tmdb_id))
+    return {'message': 'Added to watchlist.'}
 
 
-@app.route('/remove/watchlist/<media_type>/<int:tmdb_id>', methods=['POST'])
+
+@app.route('/watchlist/remove', methods=['POST'])
 @login_required
-def remove_from_watchlist(media_type, tmdb_id):
-    """Remove a movie or TV show to user watchlist
+def remove_from_watchlist():
+    """Add a movie or TV show to user watchlist
 
     """
+    data = request.get_json()
+    
     watchlist = db.session.scalar(sa.select(VideoList).where(VideoList.user_id == current_user.id, VideoList.name == 'watchlist'))
-    video = db.session.scalar(sa.select(Video).where(Video.tmdb_id == tmdb_id, Video.media_type == media_type))
+    video = db.session.scalar(sa.select(Video).where(Video.tmdb_id == data['tmdb_id'], Video.media_type == data['media_type']))
     
     watchlist.remove_video(video)
-    db.session.commit()    
+    db.session.commit()          
         
-    if media_type == 'movie':
-            return redirect(url_for('movie_detail', movie_id=tmdb_id))
-    return redirect(url_for('tv_detail', tv_id=tmdb_id))
+    return {'message': 'Removed from watchlist.'}
+
 #############################################################################
 
 #############################################################################
