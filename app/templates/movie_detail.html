@@ -38,12 +38,12 @@
                     <p class="card-text">{{movie_data.overview}}</p>
                     {% if current_user.is_authenticated %}
                         {% if  not in_watchlist %}
-                            <button class="btn btn-primary btn-sm watchlist_add">
-                                <i class="fa-regular fa-bookmark"></i> Add to WatchList
+                            <button class="btn btn-primary btn-sm detail-watchlist-add-btn">
+                                <i class="fa-regular fa-bookmark no-click"></i> Add to WatchList
                             </button>
                         {% else %}
-                            <button class="btn btn-danger btn-sm watchlist_remove_detail">
-                                <i class="fa-solid fa-bookmark"></i> Remove from WatchList
+                            <button class="btn btn-danger btn-sm detail-watchlist-remove-btn">
+                                <i class="fa-solid fa-bookmark no-click"></i> Remove from WatchList
                             </button>
                         {% endif %}
                     {% else %}

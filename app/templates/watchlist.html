@@ -10,10 +10,22 @@
             <div class="card mb-3" id="{{video.video.media_type}}-{{video.video_detail.id}}">
                 <div class="row g-0">
                     <div class="col-md-4">
-                        {% if  video.video_detail.poster_path %}
-                            <img src="https://image.tmdb.org/t/p/w185{{video.video_detail.poster_path}}" class="img-fluid rounded-start" alt="Poster">
+                        {% if video.video.media_type == 'movie'  %}
+                            <a href="{{url_for('movie_detail', movie_id=video.video_detail.id)}}">
+                                {% if  video.video_detail.poster_path %}
+                                    <img src="https://image.tmdb.org/t/p/w185{{video.video_detail.poster_path}}" class="img-fluid rounded-start" alt="Poster">
+                                {% else %}
+                                    <img src="https://img.icons8.com/ios-filled/100/no-image.png" alt="no-image"/>
+                                {% endif %}
+                            </a>
                         {% else %}
-                            <img src="https://img.icons8.com/ios-filled/100/no-image.png" alt="no-image"/>
+                            <a href="{{url_for('tv_detail', tv_id=video.video_detail.id)}}">
+                                {% if  video.video_detail.poster_path %}
+                                    <img src="https://image.tmdb.org/t/p/w185{{video.video_detail.poster_path}}" class="img-fluid rounded-start" alt="Poster">
+                                {% else %}
+                                    <img src="https://img.icons8.com/ios-filled/100/no-image.png" alt="no-image"/>
+                                {% endif %}
+                            </a>
                         {% endif %}
                     </div>
                     <div class="col-md-8">
@@ -33,7 +45,7 @@
                                 {{video.video_detail.release_date}}
                             </h6>
                             <p class="card-text">{{video.video_detail.overview}}</p>
-                            <button class="btn btn-danger btn-sm" id="btn-{{video.video.media_type}}-{{video.video_detail.id}}" data-tmdb-id="{{video.video_detail.id}}" data-media-type="{{video.video.media_type}}">
+                            <button class="btn btn-danger btn-sm watchlist-page-remove-btn" id="btn-{{video.video.media_type}}-{{video.video_detail.id}}" data-tmdb-id="{{video.video_detail.id}}" data-media-type="{{video.video.media_type}}">
                                 <i class="fa-solid fa-bookmark no-click"></i> Remove from WatchList
                             </button>
                         </div>
