@@ -88,10 +88,11 @@
 
 <!-- This div section contains streaming data by country -->
 <div class="container" id="country_section">
+    <hr>
     <div class="row mb-5">
         <!-- rows containing streaming providers seperated by type(called type) -->
         <div class="col-9">
-            <h2 id="net">{{get_country_name(country_selected)}}</h2>
+            <h2 class="mb-5">Where to Watch in {{get_country_name(country_selected)}}</h2>
             <!-- loop over the provider types(ex: rent, buy) for selected country -->
             {% for type in tv_data['watch/providers'].results[country_selected] %}
                 {% if type != 'link'%}
@@ -144,13 +145,13 @@
 </div>
 
 
-
 <!-- This div section contains streaming data by streaming provider. -->
 <div class="container" id="provider_section">
+    <hr>
     <div class="row mb-5">
         <!-- column displays all countries flags where the movie is available for the selected provider -->
         <div class="col-9">
-            <h2 id="net">{{provider_name}}</h2>
+            <h2 class="mb-5">{{tv_data.name}} available on {{provider_name}} in:</h2>
             <div class="row row-cols-1 row-cols-md-5 g-4">
                 <!-- loop over countries from watch provider result -->
                 {% for country in tv_data['watch/providers'].results %}
@@ -204,6 +205,8 @@
         </div>        
     </div>
 </div>
+
+<hr>
 
 <!-- Recommendations section -->
 <div class="container overflow-x-scroll overflow-y-hidden" id="recommendations">
