@@ -79,9 +79,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Global Streaming Search Screen Shot][website-screenshot]](https://example.com)
+[![Global Streaming Search Screen Shot][website-screenshot]](https://global-streaming-search-dcl1.onrender.com/)
 
-Global Streaming Search will help you easily find on what platforms your favorite movies and TV shows are streaming on. You can view streaming availablitiy by country to see all the streaming platform that has that movie or TV show available. Another way to view streaming availablility is by streaming platform. You can select a streaming platform and see which countries have that movie or TV show available for the selected streaming platform.
+Global Streaming Search will help you easily find on what platforms your favorite movies and TV shows are streaming on. You can view streaming availablitiy by country to see all the streaming platform that has that movie or TV show available. Another way to view streaming availablility is by streaming platform. You can select a streaming platform and see which countries have that movie or TV show available for the selected streaming platform. [Click here](https://global-streaming-search-dcl1.onrender.com/) to access the GLobal Streaming Search website and give it a try.
 
 ### Key Features
 - Can search for any movie or TV show that exist
@@ -145,7 +145,7 @@ Global Streaming Search will help you easily find on what platforms your favorit
 
 <!-- Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com -->
 
-Project Link: [https://github.com/jesus-b32/repo_name](https://github.com/jesus-b32/repo_name)
+Project Link: [https://github.com/jesus-b32/Global-Streaming-Search](https://github.com/jesus-b32/Global-Streaming-Search)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
