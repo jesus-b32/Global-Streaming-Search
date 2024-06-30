@@ -5,7 +5,27 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '.env'))
 
 api_key = os.environ.get('API_KEY')
+base_url = 'https://api.themoviedb.org/3'
 
+# helper function for making API request and error handling
+def api_request(url):
+    try:
+        headers = {
+            "accept": "application/json",
+            "Authorization": f"Bearer {api_key}"
+        }
+        response = requests.get(url, headers=headers, timeout=3)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+    except requests.exceptions.HTTPError as errh:
+        print ("Http Error: ", errh)
+    except requests.exceptions.ConnectionError as errc:
+        print ("Error Connecting: ", errc)
+    except requests.exceptions.Timeout as errt:
+        print ("Timeout Error: ", errt)
+    except requests.exceptions.RequestException as err:
+        print ("Something went wrong: ", err)
+
+    return response.json()
 
 ############# Movie API calls ###############################
 def movie_search(search, page):
@@ -18,15 +38,8 @@ def movie_search(search, page):
     Returns:
         _type_: JSON
     """
-    url = f"https://api.themoviedb.org/3/search/movie?query={search}&include_adult=false&language=en-US&page={page}"
-
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-
-    response = requests.get(url, headers=headers)
-    return response.json()
+    url = f"{base_url}/search/movie?query={search}&include_adult=false&language=en-US&page={page}"
+    return api_request(url)
 
 
 def movie_details(movie_id):
@@ -38,14 +51,8 @@ def movie_details(movie_id):
     Returns:
         _type_: JSON
     """
-    url = f"https://api.themoviedb.org/3/movie/{movie_id}?append_to_response=watch%2Fproviders%2Crecommendations&language=en-US"
-    
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-    response = requests.get(url, headers=headers)
-    return response.json() 
+    url = f"{base_url}/movie/{movie_id}?append_to_response=watch%2Fproviders%2Crecommendations&language=en-US"
+    return api_request(url)
 
 
 def movie_provider_list():
@@ -54,15 +61,8 @@ def movie_provider_list():
     Returns:
         _type_: JSON
     """
-    url = "https://api.themoviedb.org/3/watch/providers/movie?language=en-US"
-
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-
-    response = requests.get(url, headers=headers)
-    return response.json()    
+    url = f"{base_url}/watch/providers/movie?language=en-US"
+    return api_request(url)
 ##############################################################################
 
 
@@ -77,16 +77,9 @@ def tv_search(search, page):
     Returns:
         _type_: JSON
     """    
-    url = f"https://api.themoviedb.org/3/search/tv?query={search}&include_adult=false&language=en-US&page={page}"
+    url = f"{base_url}/search/tv?query={search}&include_adult=false&language=en-US&page={page}"
+    return api_request(url)
 
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-    
-    # tv shows request
-    response = requests.get(url, headers=headers)
-    return response.json()
 
 def tv_details(tv_id):
     """Returns JSON of tv show detials including streaming provider data for that tv show from TMDB API
@@ -97,14 +90,8 @@ def tv_details(tv_id):
     Returns:
         _type_: JSON
     """
-    url = f"https://api.themoviedb.org/3/tv/{tv_id}?append_to_response=watch%2Fproviders%2Crecommendations"
-    
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-    response = requests.get(url, headers=headers)
-    return response.json() 
+    url = f"{base_url}/tv/{tv_id}?append_to_response=watch%2Fproviders%2Crecommendations"
+    return api_request(url)
 
 
 def tv_provider_list():
@@ -113,15 +100,9 @@ def tv_provider_list():
     Returns:
         _type_: JSON
     """
-    url = "https://api.themoviedb.org/3/watch/providers/tv?language=en-US"
+    url = f"{base_url}/watch/providers/tv?language=en-US"
+    return api_request(url)
 
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-
-    response = requests.get(url, headers=headers)
-    return response.json()    
 ##############################################################################
 
 
@@ -136,15 +117,8 @@ def movie_popular(page):
     Returns:
         _type_: JSON
     """
-    url = f"https://api.themoviedb.org/3/movie/popular?page={page}"
-
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-
-    response = requests.get(url, headers=headers)
-    return response.json()
+    url = f"{base_url}/movie/popular?page={page}"
+    return api_request(url)
 
 
 def movie_top_rated(page):
@@ -156,15 +130,8 @@ def movie_top_rated(page):
     Returns:
         _type_: JSON
     """    
-    url = f"https://api.themoviedb.org/3/movie/top_rated?page={page}"
-
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-
-    response = requests.get(url, headers=headers)
-    return response.json()
+    url = f"{base_url}/movie/top_rated?page={page}"
+    return api_request(url)
 
 
 def movie_now_playing(page):
@@ -176,15 +143,8 @@ def movie_now_playing(page):
     Returns:
         _type_: JSON
     """      
-    url = f"https://api.themoviedb.org/3/movie/now_playing?page={page}&region=US"
-
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-
-    response = requests.get(url, headers=headers)
-    return response.json()
+    url = f"{base_url}/movie/now_playing?page={page}&region=US"
+    return api_request(url)
 
 
 def movie_upcoming(page):
@@ -196,15 +156,8 @@ def movie_upcoming(page):
     Returns:
         _type_: JSON
     """      
-    url = f"https://api.themoviedb.org/3/movie/upcoming?page={page}&region=US"
-
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-
-    response = requests.get(url, headers=headers)
-    return response.json()
+    url = f"{base_url}/movie/upcoming?page={page}&region=US"
+    return api_request(url)
 
 
 ############# Discover TV API calls ###############################
@@ -217,15 +170,8 @@ def tv_popular(page):
     Returns:
         _type_: JSON
     """       
-    url = f"https://api.themoviedb.org/3/tv/popular?page={page}"
-
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-
-    response = requests.get(url, headers=headers)
-    return response.json()
+    url = f"{base_url}/tv/popular?page={page}"
+    return api_request(url)
 
 
 def tv_top_rated(page):
@@ -237,15 +183,8 @@ def tv_top_rated(page):
     Returns:
         _type_: JSON
     """      
-    url = f"https://api.themoviedb.org/3/tv/top_rated?page={page}"
-
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-
-    response = requests.get(url, headers=headers)
-    return response.json()
+    url = f"{base_url}/tv/top_rated?page={page}"
+    return api_request(url)
 
 
 def tv_on_the_air(page):
@@ -257,15 +196,8 @@ def tv_on_the_air(page):
     Returns:
         _type_: JSON
     """       
-    url = f"https://api.themoviedb.org/3/tv/on_the_air?page={page}"
-
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-
-    response = requests.get(url, headers=headers)
-    return response.json()
+    url = f"{base_url}/tv/on_the_air?page={page}"
+    return api_request(url)
 
 
 def tv_airing_today(page):
@@ -277,15 +209,8 @@ def tv_airing_today(page):
     Returns:
         _type_: JSON
     """      
-    url = f"https://api.themoviedb.org/3/tv/airing_today?page={page}"
-
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-
-    response = requests.get(url, headers=headers)
-    return response.json()
+    url = f"{base_url}/tv/airing_today?page={page}"
+    return api_request(url)
 
 
 
@@ -297,14 +222,9 @@ def country_list():
     Returns:
         _type_: JSON
     """
-    url = "https://api.themoviedb.org/3/watch/providers/regions?language=en-US"
+    url = f"{base_url}/watch/providers/regions?language=en-US"
+    return api_request(url)
 
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-    response = requests.get(url, headers=headers)
-    return response.json()    
 ###############################################################################
 
 ############# Configuration API calls ###################################
@@ -314,15 +234,10 @@ def all_countries():
     Returns:
         _type_: JSON
     """
-    url = "https://api.themoviedb.org/3/configuration/countries?language=en-US"
+    url = f"{base_url}/configuration/countries?language=en-US"
+    return api_request(url)
 
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
 
-    response = requests.get(url, headers=headers)
-    return response.json()
 
 
 #Helper functions for API##############################################
@@ -354,4 +269,3 @@ def get_video_detail(tmdb_id, media_type):
     if media_type == 'movie':
         return movie_details(tmdb_id)
     return tv_details(tmdb_id)
-            
